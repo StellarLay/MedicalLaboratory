@@ -1,0 +1,18 @@
+﻿<Window x:Class="SessionOne.View.AdminPage"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SessionOne.View"
+        mc:Ignorable="d"
+        Title="AdminPage" Height="450" Width="800">
+    <Grid>
+        <Label Content="Добро пожаловать  Администратор" HorizontalAlignment="Left" Margin="381,14,0,0" VerticalAlignment="Top" Width="229"/>
+        <Image HorizontalAlignment="Left" Height="100" Margin="626,20,0,0" VerticalAlignment="Top" Width="100" Source="laborant_2.png">
+            <Image.OpacityMask>
+                <ImageBrush ImageSource="laborant_2.png"/>
+            </Image.OpacityMask>
+        </Image>
+
+    </Grid>
+</Window>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="a1c9f9a1549d4b6eb3226464b3f9c42a" Name="Diagram1">
+        <EntityTypeShape EntityType="MedicalLaboratoryModel.Administrators" Width="1.5" PointX="7.75" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="MedicalLaboratoryModel.Analyzers" Width="1.5" PointX="3" PointY="7.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="MedicalLaboratoryModel.DataAnalyzator" Width="1.5" PointX="5.25" PointY="11.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="MedicalLaboratoryModel.History" Width="1.5" PointX="5.25" PointY="4" IsExpanded="true" />
+        <EntityTypeShape EntityType="MedicalLaboratoryModel.Orders" Width="1.5" PointX="10.25" PointY="7.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="MedicalLaboratoryModel.OrdersArchive" Width="1.5" PointX="9.75" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="MedicalLaboratoryModel.Pacients" Width="1.5" PointX="8" PointY="7.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="MedicalLaboratoryModel.Services" Width="1.5" PointX="3" PointY="10.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="MedicalLaboratoryModel.StrahovieCompanii" Width="1.5" PointX="5.75" PointY="8" IsExpanded="true" />
+        <EntityTypeShape EntityType="MedicalLaboratoryModel.SuccessService" Width="1.5" PointX="5.25" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MedicalLaboratoryModel.sysdiagrams" Width="1.5" PointX="7.75" PointY="12" IsExpanded="true" />
+        <EntityTypeShape EntityType="MedicalLaboratoryModel.Types" Width="1.5" PointX="0.75" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="MedicalLaboratoryModel.Users" Width="1.5" PointX="3" PointY="3.5" IsExpanded="true" />
+        <AssociationConnector Association="MedicalLaboratoryModel.FK_DataAnalyzator_Analyzers" ManuallyRouted="false" />
+        <AssociationConnector Association="MedicalLaboratoryModel.FK_SuccessService_Analyzers" ManuallyRouted="false" />
+        <AssociationConnector Association="MedicalLaboratoryModel.FK_History_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="MedicalLaboratoryModel.FK_Orders_Pacients" ManuallyRouted="false" />
+        <AssociationConnector Association="MedicalLaboratoryModel.FK_Pacients_StrahovieCompanii" ManuallyRouted="false" />
+        <AssociationConnector Association="MedicalLaboratoryModel.FK_SuccessService_Services" ManuallyRouted="false" />
+        <AssociationConnector Association="MedicalLaboratoryModel.FK_SuccessService_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="MedicalLaboratoryModel.FK_Users_Types" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
