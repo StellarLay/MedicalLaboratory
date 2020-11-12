@@ -9,9 +9,9 @@
         Title="Создание заказа" Height="624" Width="481" WindowStartupLocation="CenterScreen" WindowStyle="None" MinWidth="481" MinHeight="624" ResizeMode="CanMinimize" BorderBrush="Black" BorderThickness="1" SnapsToDevicePixels="True">
     <Grid>
         <StackPanel HorizontalAlignment="Left" Height="57" Margin="14,15,-14,0" VerticalAlignment="Top" Orientation="Horizontal">
-            <Image Width="50" Source="logo.png">
+            <Image Width="50" Source="img/logo.png">
                 <Image.OpacityMask>
-                    <ImageBrush ImageSource="logo.png"/>
+                    <ImageBrush ImageSource="img/logo.png"/>
                 </Image.OpacityMask>
             </Image>
             <Label Content="Создание заказа" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="#E5000000"/>

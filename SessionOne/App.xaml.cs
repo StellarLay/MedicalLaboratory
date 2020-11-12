@@ -13,5 +13,8 @@ namespace SessionOne
     /// </summary>
     public partial class App : Application
     {
+        public static string username;
+        public static string userimage;
     }
+
 }

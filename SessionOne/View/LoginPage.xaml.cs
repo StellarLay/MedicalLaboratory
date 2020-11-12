@@ -25,5 +25,11 @@ namespace SessionOne.View
             InitializeComponent();
             DataContext = new ApplicationViewModel();
         }
+
+        // DragDrop window
+        private void dragmoveBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
     }
 }

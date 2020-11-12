@@ -29,6 +29,7 @@ namespace SessionOne
         public string lastenter { get; set; }
         public string services { get; set; }
         public int type { get; set; }
+        public string MainImage { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<History> History { get; set; }

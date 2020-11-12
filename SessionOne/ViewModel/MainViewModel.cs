@@ -22,28 +22,30 @@ namespace SessionOne.ViewModel
         {
             DataBase = new DBViewModel();
 
-            timer.Tick += new EventHandler(timer_tick);
-            timer.Interval = new TimeSpan(0, 0, 0, 1);
+            timer.Tick += new EventHandler(timer_bar);
+            timer.Interval = new TimeSpan(0, 0, 0, 0, 1);
 
             // При отрабатывании команды мы попадаем в определенный метод и выполняется определенная логика
             LoginCommand = new RelayCommand<object>(Login);
-            RefreshCaptchaCommand = new RelayCommand<object>(_=>RefreshCaptcha());
             BackBtnCommand = new RelayCommand<object>(_=>BackBtn());
             AddPacientBtnCommand = new RelayCommand<object>(_=>AddPacientBtn());
             AddPacientDataCommand = new RelayCommand<object>(_=>AddPacient());
             OpenOrderFormCommand = new RelayCommand<object>(_=>OpenOrderForm());
             CreateOrderCommand = new RelayCommand<object>(_=>CreateOrder());
             CheckAnalyserCommand = new RelayCommand<AnalyserViewModel>(CheckSelectAnalyser);
-            CheckServiceCommand = new RelayCommand<ServiceViewModel>(CheckSelectService);
+            CheckServiceCommand = new RelayCommand<ServiceFilterPatient>(CheckSelectService);
             SelectedFIOCommand = new RelayCommand<PacientsViewModel>(SelectedPacient);
             SendAnalyseCommand = new RelayCommand<object>(_ => SendAnalyse());
+            SelectedPatientCommand = new RelayCommand<PacientsViewModel>(SelectedPatient);
 
             MaterialValue = "";
+            // Подгрузим приветствие пользователя
+            UserName = "Добро пожаловать, " + App.username + "!";
+            UserImage = App.userimage;
         }
 
         // Commands
         public ICommand LoginCommand { get; }
-        public ICommand RefreshCaptchaCommand { get; }
         public ICommand BackBtnCommand { get; }
         public ICommand AddPacientBtnCommand { get; }
         public ICommand AddPacientDataCommand { get; }
@@ -53,14 +55,46 @@ namespace SessionOne.ViewModel
         public ICommand CheckServiceCommand { get; }
         public ICommand SelectedFIOCommand { get; }
         public ICommand SendAnalyseCommand { get; }
+        public ICommand SelectedPatientCommand { get; }
+
 
         /// <summary>
         /// Методы
         /// </summary>
+
+        // Авторизаци пользователя
         private void Login(object values)
         {
             PasswordValue = values.GetType().GetProperty("Password").GetValue(values).ToString();
-            string nameForm = DataBase.LoginUser(LoginValue, PasswordValue);
+            IsLogin = DataBase.LoginUser(LoginValue, PasswordValue);
+            ErrorMessage = DataBase.errorMessageLogin;
+
+            if (IsLogin)
+            {
+                ErrorMessage = "";
+                timer.Start();
+            }
+        }
+
+        // Таймер прогресс бара авторизации
+        int ms = 0;
+        private void timer_bar(object sender, EventArgs e)
+        {
+            ms++;
+            if(ms == 180)
+            {
+                IsIndeterminate = false;
+                ms = 0;
+                // Включаем форму
+                DataBase.statusLoading = true;
+                DataBase.LoginUser(LoginValue, PasswordValue);
+                timer.Stop();
+                IsLogin = false;
+            }
+            else
+            {
+                IsIndeterminate = true;
+            }
         }
 
         // Открытие формы добавление пациента
@@ -69,6 +103,8 @@ namespace SessionOne.ViewModel
             AddPacientPage page = new AddPacientPage();
             page.Show();
         }
+
+        // Логика кнопки "Назад"
         private void BackBtn()
         {
             var cur = App.Current.Windows.OfType<Window>().FirstOrDefault(o => o.IsActive);
@@ -87,18 +123,12 @@ namespace SessionOne.ViewModel
                 LoginPage form = new LoginPage();
                 form.Show();
             }
-           
         }
-        private void RefreshCaptcha() => Captcha();
-        private void Captcha()
+
+        // Отлавливаем выбранного пациента в анализаторе
+        private void SelectedPatient(PacientsViewModel pacient)
         {
-            Random rnd = new Random();
-            string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-            CaptchaValue = "";
-            for (int i = 0; i < 4; i++)
-            {
-                CaptchaValue += chars[rnd.Next(0,10)];
-            }
+            DataBase.LoadServicesAnalyser(ValuePatientAnalyzer);
         }
 
         // Создаем новый объект класса Pacients и добавляем его
@@ -129,10 +159,16 @@ namespace SessionOne.ViewModel
         }
 
         // Отлавливаем выбранный анализатор
-        private void CheckSelectAnalyser(AnalyserViewModel analyser) => AnalysatorValue = analyser.Name;
+        private void CheckSelectAnalyser(AnalyserViewModel analyser) {
+            AnalysatorValue = analyser.Name;
+            DataBase.NotSuccessService(AnalysatorValue);
+        }
 
         // Отлавливаем выбранную услугу
-        private void CheckSelectService(ServiceViewModel service) => ServiceValue = service.Service;
+        private void CheckSelectService(ServiceFilterPatient service)
+        {
+             ServiceValue = service.Service;
+        }
 
         // Отлавливаем выбранного пациента
         private void SelectedPacient(PacientsViewModel pacient) => ValuePacient = pacient.FIO;
@@ -140,29 +176,12 @@ namespace SessionOne.ViewModel
         // Отправляем данные на анализ
         private void SendAnalyse()
         {
-            //int pbValue = 
-            DataBase.AnalyseOrder(ValuePacient, AnalysatorValue, ServiceValue);
-            //ProgBarValue = pbValue.ToString();
+            //DataBase.AnalyseOrder(ValuePacient, AnalysatorValue, ServiceValue);
 
-            if(DataBase.l != 1)
-            {
-                timer.Start();
-            }
-        }
-
-        private void timer_tick(object sender, EventArgs e)
-        {
-            var barValue = DataBase.pgvalue;
-
-            ProgBarValue += barValue;
-            if (DataBase.IsComplete == false)
-            {
-                IsAnalyse = true;
-            }
-            else
-            {
-                IsAnalyse = false;
-            }
+            //if(DataBase.l != 1)
+            //{
+            //    timer.Start();
+            //}
         }
 
         // Properties
@@ -188,36 +207,62 @@ namespace SessionOne.ViewModel
             }
         }
 
-        private string captchavalue;
-        public string CaptchaValue
+        // Progress bar
+        private bool isindeterminate;
+        public bool IsIndeterminate
         {
-            get => captchavalue;
+            get => isindeterminate;
             set
             {
-                captchavalue = value;
-                OnPropertyChanged("CaptchaValue");
+                isindeterminate = value;
+                OnPropertyChanged("IsIndeterminate");
             }
         }
 
-        private string captchainput;
-        public string CaptchaInput
+        // Свойство сообщение об ошибке
+        private string errormessage;
+        public string ErrorMessage
         {
-            get => captchainput;
+            get => errormessage;
             set
             {
-                captchainput = value;
-                OnPropertyChanged("CaptchaInput");
+                errormessage = value;
+                OnPropertyChanged("ErrorMessage");
             }
         }
 
-        private bool iscaptcha;
-        public bool IsCaptcha
+        // Статус, если мы вошли
+        private bool islogin;
+        public bool IsLogin
         {
-            get => iscaptcha;
+            get => islogin;
             set
             {
-                iscaptcha = value;
-                OnPropertyChanged("IsCaptcha");
+                islogin = value;
+                OnPropertyChanged("IsLogin");
+            }
+        }
+
+        // Свойство сообщение об ошибке
+        private string userimage;
+        public string UserImage
+        {
+            get => userimage;
+            set
+            {
+                userimage = value;
+                OnPropertyChanged("UserImage");
+            }
+        }
+
+        private string username;
+        public string UserName
+        {
+            get => username;
+            set
+            {
+                username = value;
+                OnPropertyChanged("UserName");
             }
         }
 
@@ -395,14 +440,14 @@ namespace SessionOne.ViewModel
             }
         }
 
-        private string progbarvalue;
-        public string ProgBarValue
+        private string valuepacientanalyzer;
+        public string ValuePatientAnalyzer
         {
-            get => progbarvalue;
+            get => valuepacientanalyzer;
             set
             {
-                progbarvalue = value;
-                OnPropertyChanged("ProgBarValue");
+                valuepacientanalyzer = value;
+                OnPropertyChanged("ValuePatientAnalyzer");
             }
         }
     }

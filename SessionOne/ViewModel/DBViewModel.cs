@@ -17,19 +17,13 @@ namespace SessionOne.ViewModel
     /// задания от комманд приходят сюда и здесь взаимодействуют с базой данных, 
     /// выполняя необходимую работу
     /// </summary>
-    class DBViewModel
+    class DBViewModel : VM
     {
-        DispatcherTimer timer = new DispatcherTimer();
-
         public MedicalLaboratoryEntities DataBaseModel;
         public DBViewModel()
         {
             // Инициализируем наш контекст данных, чтобы в дальнейшем с ним работать
             DataBaseModel = new MedicalLaboratoryEntities();
-
-            timer.Tick += new EventHandler(timer_tick);
-            timer.Interval = new TimeSpan(0, 0, 0, 1);
-
             LoadData();
         }
 
@@ -39,6 +33,16 @@ namespace SessionOne.ViewModel
         public ObservableCollection<ServiceViewModel> Services { get; private set; }
         public ObservableCollection<AnalyserViewModel> Analysers { get; private set; }
         public ObservableCollection<OrdersViewModel> Orders { get; private set; }
+
+        // доп коллекции
+        public ObservableCollection<ServiceFilterPatient> ServicesPatientFilter { get; private set; }
+
+        private ObservableCollection<NotSuccessServices> _NotSuccessServ;
+        public ObservableCollection<NotSuccessServices> NotSuccessServ
+        {
+            get => _NotSuccessServ;
+            set => SetField(ref _NotSuccessServ, value);
+        }
 
         // Метод для заполнения всех необходимых нам коллекций для дальнейшей работы с ними
         public void LoadData()
@@ -69,10 +73,12 @@ namespace SessionOne.ViewModel
                     Analysers.Add(new AnalyserViewModel(item));
                 }
 
-                Orders = new ObservableCollection<OrdersViewModel>();
-                foreach (var item in DataBaseModel.Orders.Where(w => w.StatusService != "Выполнена" && w.StatusService != null))
+                ServicesPatientFilter = new ObservableCollection<ServiceFilterPatient>();
+                var servicePatientOrder = from s in DataBaseModel.Services
+                                          select new ServiceFilterPatient { Code = s.Code, Service = s.Service };
+                foreach (var item in servicePatientOrder)
                 {
-                    Orders.Add(new OrdersViewModel(item));
+                    ServicesPatientFilter.Add(item);
                 }
             }
             catch(Exception ex)
@@ -82,45 +88,116 @@ namespace SessionOne.ViewModel
 
         }
 
+        // После выбора пациента подгружаем только анализы, доступные для него
+        public void LoadServicesAnalyser(string patientFio)
+        {
+            Services.Clear();
+
+            var getPatientId = DataBaseModel.Pacients.FirstOrDefault(w => w.FIO == patientFio);
+            var servicePatientOrder = from o in DataBaseModel.Orders
+                                      join s in DataBaseModel.Services on o.Services equals s.Code
+                                      where o.PacientId == getPatientId.Id
+                                      select new ServiceFilterPatient{ Code = s.Code, Service = s.Service};
+
+            ServicesPatientFilter.Clear();
+            foreach (var item in servicePatientOrder)
+            {
+                ServicesPatientFilter.Add(item);
+            }
+        }
+
+        // Отображаем невыполненные услуги в зависимости от выбранного анализатора
+        public void NotSuccessService(string analysatorValue)
+        {
+            var result = from order in DataBaseModel.Orders
+                         join service in DataBaseModel.Services on order.Services equals service.Code
+                         join analyser in DataBaseModel.Analyzers on service.Analysers equals analyser.Id
+                         where analyser.Name == analysatorValue
+                         select new NotSuccessServices
+                         {
+                             Service = service.Service,
+                             Status = order.StatusService,
+                             Analysator = analyser.Name
+                         };
+
+            NotSuccessServ = new ObservableCollection<NotSuccessServices>(result);
+        }
+
         // Метод для авторизации пользователя
-        public string LoginUser(string login, string password)
+        public string errorMessageLogin;
+        public bool statusLoading;
+        public bool LoginUser(string login, string password)
         {
             var user = DataBaseModel.Users.FirstOrDefault(w => w.login == login && w.password == password);
-
             string typename = "";
+
             if (user != null)
             {
                 var types = DataBaseModel.Types.FirstOrDefault(w => w.Id == user.type);
                 typename = types.Name;
-                if (types.Name == "Лаборант исследователь")
+                App.username = user.name;
+                App.userimage = user.MainImage;
+
+                // Когда прогрес бар загрузился
+                if(statusLoading)
                 {
-                    LaborantIssledovatel form = new LaborantIssledovatel();
-                    
-                    form.Show();
+                    switch (types.Name)
+                    {
+                        case "Администратор":
+                            AdminPage form = new AdminPage();
+                            form.Show();
+                            errorMessageLogin = "";
+                            break;
+                        case "Лаборант":
+                            LaborantPage formLaborant = new LaborantPage();
+                            var cur = App.Current.Windows.OfType<Window>().FirstOrDefault(o => o.IsActive);
+                            cur.Hide();
+                            formLaborant.Show();
+                            errorMessageLogin = "";
+                            break;
+                        case "Лаборант исследователь":
+                            var curLogin = App.Current.Windows.OfType<Window>().FirstOrDefault(o => o.IsActive);
+                            curLogin.Hide();
+                            LaborantIssledovatel formLaborantIssledovatel = new LaborantIssledovatel();
+                            formLaborantIssledovatel.Show();
+                            errorMessageLogin = "";
+                            break;
+                        case "Бухгалтер":
+                            BuhgalterPage formBuhgalter = new BuhgalterPage();
+                            formBuhgalter.Show();
+                            errorMessageLogin = "";
+                            break;
+                    }
                 }
-                else if(types.Name == "Лаборант")
-                {
-                    LaborantPage form = new LaborantPage();
-                    var cur = App.Current.Windows.OfType<Window>().FirstOrDefault(o => o.IsActive);
-                    cur.Hide();
-                    form.Show();
-                }
-                else if(types.Name == "Бухгалтер")
-                {
-                    //BuhgalterPage form = new BuhgalterPage();
-                }
-                else
-                {
-                    AdminPage form = new AdminPage();
-                }
-                return types.Name;
+            }
+            else if(string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
+            {
+                errorMessageLogin = "Введите логин и пароль!";
+                return false;
             }
             else
             {
-                MessageBox.Show("Неуспешная попытка авторизации!");
+                errorMessageLogin = "Такого пользователя не существует!";
+                return false;
             }
-            return typename;
+
+            return true;
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         // Добавление пациента
         public void AddPacient(Pacients pacient)
@@ -160,7 +237,7 @@ namespace SessionOne.ViewModel
                 Orders order = new Orders
                 {
                     PacientId = pacient.Id,
-                    Services = serviceCode,
+                    Services = Convert.ToInt32(serviceCode),
                     DateCreate = DateTime.Now,
                     StatusOrder = "Starting",
                     StatusService = "Processed",
@@ -176,7 +253,7 @@ namespace SessionOne.ViewModel
         // Взаимодействие с API
         int patientId = 0;
         string analyservalue = "";
-        string serviceCode = "";
+        int serviceCode = 0;
         public string pgvalue = "";
         public bool IsComplete = false;
 
@@ -249,7 +326,7 @@ namespace SessionOne.ViewModel
                 else
                 {
                     l = 0;
-                    timer.Start();
+                    //timer.Start();
                 }
             }
         }
@@ -261,7 +338,7 @@ namespace SessionOne.ViewModel
             {
                 var getPacient = DataBaseModel.Pacients.FirstOrDefault(w => w.FIO == fio);
                 var getService = DataBaseModel.Services.FirstOrDefault(w => w.Service == serviceName);
-                string sc = getService.Code.ToString();
+                int sc = getService.Code;
                 var getServiceOrder = DataBaseModel.Orders.FirstOrDefault(w => w.Services == sc);
 
                 if(getServiceOrder == null)
@@ -272,8 +349,8 @@ namespace SessionOne.ViewModel
                 {
                     int k = Convert.ToInt32(getServiceOrder.Services);
                     var AnalysatorService = DataBaseModel.Services.FirstOrDefault(w => w.Code == k);
-
-                    if (AnalysatorService.Analysers != analysatorValue)
+                    var getAnalysator = DataBaseModel.Analyzers.FirstOrDefault(w => w.Name == analysatorValue);
+                    if (AnalysatorService.Analysers != getAnalysator.Id)
                     {
                         MessageBox.Show("Для анализа : " + serviceName + " выберите другой анализатор!");
                         l = 1;
@@ -281,7 +358,7 @@ namespace SessionOne.ViewModel
                     else
                     {
                         l = 0;
-                        serviceCode = getServiceOrder.Services;
+                        serviceCode = (int)getServiceOrder.Services;
                         patientId = getPacient.Id;
                         analyservalue = analysatorValue;
                         ApiProcess();

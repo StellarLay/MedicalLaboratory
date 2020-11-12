@@ -1,5 +1,4 @@
-﻿using SessionOne.ViewModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,14 +15,13 @@ using System.Windows.Shapes;
 namespace SessionOne.View
 {
     /// <summary>
-    /// Логика взаимодействия для AdminPage.xaml
+    /// Логика взаимодействия для BuhgalterPage.xaml
     /// </summary>
-    public partial class AdminPage : Window
+    public partial class BuhgalterPage : Window
     {
-        public AdminPage()
+        public BuhgalterPage()
         {
             InitializeComponent();
-            DataContext = new ApplicationViewModel();
         }
     }
 }

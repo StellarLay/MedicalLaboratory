@@ -8,9 +8,9 @@
         Title="AdminPage" Height="450" Width="800">
     <Grid>
         <Label Content="Добро пожаловать  Администратор" HorizontalAlignment="Left" Margin="381,14,0,0" VerticalAlignment="Top" Width="229"/>
-        <Image HorizontalAlignment="Left" Height="100" Margin="626,20,0,0" VerticalAlignment="Top" Width="100" Source="laborant_2.png">
+        <Image HorizontalAlignment="Left" Height="100" Margin="626,20,0,0" VerticalAlignment="Top" Width="100" Source="img/laborant_2.png">
             <Image.OpacityMask>
-                <ImageBrush ImageSource="laborant_2.png"/>
+                <ImageBrush ImageSource="img/laborant_2.png"/>
             </Image.OpacityMask>
         </Image>
 

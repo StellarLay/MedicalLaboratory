@@ -18,15 +18,18 @@ namespace SessionOne
         public Services()
         {
             this.SuccessService = new HashSet<SuccessService>();
+            this.Orders = new HashSet<Orders>();
         }
     
         public int Code { get; set; }
         public string Service { get; set; }
-        public string Price { get; set; }
-        public string TypeResult { get; set; }
-        public string Analysers { get; set; }
+        public double Price { get; set; }
+        public Nullable<int> Analysers { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SuccessService> SuccessService { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Orders> Orders { get; set; }
+        public virtual Analyzers Analyzers { get; set; }
     }
 }

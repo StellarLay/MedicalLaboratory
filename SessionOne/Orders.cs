@@ -17,11 +17,12 @@ namespace SessionOne
         public int Id { get; set; }
         public Nullable<System.DateTime> DateCreate { get; set; }
         public Nullable<int> PacientId { get; set; }
-        public string Services { get; set; }
+        public Nullable<int> Services { get; set; }
         public string StatusOrder { get; set; }
         public string StatusService { get; set; }
         public Nullable<int> TimeDay { get; set; }
     
         public virtual Pacients Pacients { get; set; }
+        public virtual Services Services1 { get; set; }
     }
 }

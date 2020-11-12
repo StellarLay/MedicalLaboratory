@@ -3,10 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:SessionOne.ViewModel"
         xmlns:local="clr-namespace:SessionOne.View"
-        xmlns:UserControls="clr-namespace:SessionOne.UserControls" xmlns:syncfusion="http://schemas.syncfusion.com/wpf" x:Class="SessionOne.View.LoginPage"
+        xmlns:UserControls="clr-namespace:SessionOne.UserControls" xmlns:syncfusion="http://schemas.syncfusion.com/wpf" x:Name="LoginForm" x:Class="SessionOne.View.LoginPage"
         mc:Ignorable="d"
-        Title="Авторизация" Height="450" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" MinWidth="800" MinHeight="450" WindowStyle="None">
+        Title="Авторизация" Height="450" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" MinWidth="800" MinHeight="450" WindowStyle="None"
+        d:DataContext="{d:DesignInstance {x:Type vm:ApplicationViewModel}}">
     <Window.Resources>
         <Style TargetType="{x:Type Label}">
             <Setter Property="FontFamily" Value="Comic Sans MS"/>
@@ -27,7 +29,7 @@
             </Image>
             <Label Content="Авторизация в системе Медицинская лаборатория" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="#E5000000"/>
         </StackPanel>
-        <StackPanel HorizontalAlignment="Center" Height="150" Margin="250,174,250,0" VerticalAlignment="Top" Width="300">
+        <StackPanel HorizontalAlignment="Center" Height="126" Margin="250,174,250,0" VerticalAlignment="Top" Width="300">
             <Label x:Name="loginlabel" Content="Логин"/>
             <TextBox x:Name="loginBox" Height="23" TextWrapping="Wrap" Padding="3,0,0,0" BorderThickness="0,0,0,1" Text="{Binding LoginValue}" Background="{x:Null}"/>
             <Label x:Name="passwordLabel" Content="Пароль" Margin="0,20,0,0"/>
@@ -62,5 +64,19 @@
             </Button.Style>
         </Button>
         <UserControls:SystemButtons Height="42" Margin="650,10,11,0" VerticalAlignment="Top" Width="Auto"/>
+        <Label x:Name="errorMessage" Content="{Binding ErrorMessage, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="250,321,0,0" VerticalAlignment="Top" Width="300" HorizontalContentAlignment="Center" Foreground="#FFD31F1F"/>
+        <Border x:Name="dragmoveBorder" BorderThickness="10" HorizontalAlignment="Left" Height="44" VerticalAlignment="Top" Width="717" MouseLeftButtonDown="dragmoveBorder_MouseLeftButtonDown" Background="#00000000"/>
+        <ProgressBar x:Name="pbarLogin" Height="28" Margin="310,378,310,0" VerticalAlignment="Top" Foreground="#FF258AA3" Value="{Binding ProgBarLoginValue}" Template="{DynamicResource ProgressBarControlTemplate}" BorderBrush="{x:Null}" IsIndeterminate="{Binding IsIndeterminate, UpdateSourceTrigger=PropertyChanged}">
+            <ProgressBar.Style>
+                <Style>
+                    <Setter Property="ProgressBar.Visibility" Value="Hidden"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsLogin}" Value="True">
+                            <Setter Property="ProgressBar.Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ProgressBar.Style>
+        </ProgressBar>
     </Grid>
 </Window>

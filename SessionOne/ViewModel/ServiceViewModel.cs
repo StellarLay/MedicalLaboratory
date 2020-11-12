@@ -15,9 +15,8 @@ namespace SessionOne.ViewModel
 
             Code = model.Code;
             Service = model.Service;
-            Price = model.Price;
-            TypeResult = model.TypeResult;
-            Analysers = model.Analysers;
+            Price = model.Price.ToString();
+            Analysers = model.Analysers.ToString();
         }
 
         private int code;

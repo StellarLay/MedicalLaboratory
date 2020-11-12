@@ -16,7 +16,7 @@ namespace SessionOne.ViewModel
             Id = model.Id;
             DateCreate = model.DateCreate;
             PacientId = model.PacientId;
-            Services = model.Services;
+            Services = model.Services.ToString();
             StatusOrder = model.StatusOrder;
             StatusService = model.StatusService;
             TimeDay = model.TimeDay;
