@@ -143,6 +143,7 @@
     <Compile Include="ViewModel\NotSuccessServices.cs" />
     <Compile Include="ViewModel\OrdersViewModel.cs" />
     <Compile Include="ViewModel\PacientsViewModel.cs" />
+    <Compile Include="ViewModel\ProcessedServices.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
     <Compile Include="ViewModel\ServiceFilterPatient.cs" />
     <Compile Include="ViewModel\ServiceViewModel.cs" />
@@ -159,6 +160,9 @@
     </Compile>
     <Compile Include="View\BuhgalterPage.xaml.cs">
       <DependentUpon>BuhgalterPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\InstructionPage.xaml.cs">
+      <DependentUpon>InstructionPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\LaborantIssledovatel.xaml.cs">
       <DependentUpon>LaborantIssledovatel.xaml</DependentUpon>
@@ -192,6 +196,11 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>Model.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <Content Include="fonts\FontAwesome.otf" />
+    <Content Include="fonts\fontawesome-webfont.ttf" />
+    <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="fonts\fontawesome-webfont.woff" />
+    <Content Include="fonts\fontawesome-webfont.woff2" />
     <None Include="Model.edmx.diagram">
       <DependentUpon>Model.edmx</DependentUpon>
     </None>
@@ -241,6 +250,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\InstructionPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\LaborantIssledovatel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -263,6 +276,9 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\font-awesome.css" />
+    <Content Include="Content\font-awesome.min.css" />
+    <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="Model.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Model.edmx</DependentUpon>

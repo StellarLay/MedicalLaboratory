@@ -31,7 +31,14 @@ namespace SessionOne.ViewModel
         public ObservableCollection<StrahovieCompaniiViewModel> Companies { get; private set; }
         public ObservableCollection<PacientsViewModel> Pacients { get; private set; }
         public ObservableCollection<ServiceViewModel> Services { get; private set; }
-        public ObservableCollection<AnalyserViewModel> Analysers { get; private set; }
+
+        private ObservableCollection<AnalyserViewModel> _Analysers;
+        public ObservableCollection<AnalyserViewModel> Analysers
+        {
+            get => _Analysers;
+            set => SetField(ref _Analysers, value);
+        }
+
         public ObservableCollection<OrdersViewModel> Orders { get; private set; }
 
         // доп коллекции
@@ -42,6 +49,13 @@ namespace SessionOne.ViewModel
         {
             get => _NotSuccessServ;
             set => SetField(ref _NotSuccessServ, value);
+        }
+
+        private ObservableCollection<ProcessedServices> _ProcessedServices;
+        public ObservableCollection<ProcessedServices> ProcessedServices
+        {
+            get => _ProcessedServices;
+            set => SetField(ref _ProcessedServices, value);
         }
 
         // Метод для заполнения всех необходимых нам коллекций для дальнейшей работы с ними
@@ -67,12 +81,6 @@ namespace SessionOne.ViewModel
                     Services.Add(new ServiceViewModel(item));
                 }
 
-                Analysers = new ObservableCollection<AnalyserViewModel>();
-                foreach (var item in DataBaseModel.Analyzers)
-                {
-                    Analysers.Add(new AnalyserViewModel(item));
-                }
-
                 ServicesPatientFilter = new ObservableCollection<ServiceFilterPatient>();
                 var servicePatientOrder = from s in DataBaseModel.Services
                                           select new ServiceFilterPatient { Code = s.Code, Service = s.Service };
@@ -85,7 +93,6 @@ namespace SessionOne.ViewModel
             {
                 MessageBox.Show(ex.Message);
             }
-
         }
 
         // После выбора пациента подгружаем только анализы, доступные для него
@@ -107,20 +114,73 @@ namespace SessionOne.ViewModel
         }
 
         // Отображаем невыполненные услуги в зависимости от выбранного анализатора
-        public void NotSuccessService(string analysatorValue)
+        public void NotSuccessService(string analysatorValue, string fioPatient)
         {
             var result = from order in DataBaseModel.Orders
                          join service in DataBaseModel.Services on order.Services equals service.Code
                          join analyser in DataBaseModel.Analyzers on service.Analysers equals analyser.Id
-                         where analyser.Name == analysatorValue
+                         where analyser.Name == analysatorValue && order.StatusService == "Не выполнена"
                          select new NotSuccessServices
                          {
                              Service = service.Service,
                              Status = order.StatusService,
+                             Patient = (int)order.PacientId,
                              Analysator = analyser.Name
                          };
 
-            NotSuccessServ = new ObservableCollection<NotSuccessServices>(result);
+            // Если мы не выбрали пациента, то грузим все невыполненные услуги
+            if (string.IsNullOrEmpty(fioPatient))
+            {
+                NotSuccessServ = new ObservableCollection<NotSuccessServices>(result);
+            }
+            // А если выбрали, то только его услуги
+            else
+            {
+                var getIdPatient = DataBaseModel.Pacients.FirstOrDefault(w => w.FIO == fioPatient);
+                NotSuccessServ = new ObservableCollection<NotSuccessServices>(result.Where(w => w.Patient == getIdPatient.Id));
+            }
+        }
+
+        // Отображаем услуги в работе в зависимости от выбранного анализатора
+        public void ServicesProcess(string analysatorValue, string fioPatient)
+        {
+            var result = from order in DataBaseModel.Orders
+                         join service in DataBaseModel.Services on order.Services equals service.Code
+                         join analyser in DataBaseModel.Analyzers on service.Analysers equals analyser.Id
+                         where analyser.Name == analysatorValue && order.StatusService != "Не выполнена"
+                         select new ProcessedServices
+                         {
+                             Services = service.Service,
+                             StatusService = order.StatusService,
+                             Result = order.Result,
+                             Patient = (int)order.PacientId,
+                             Analysator = analyser.Name
+                         };
+
+            // Если мы не выбрали пациента, то грузим все услуги в работе
+            if (string.IsNullOrEmpty(fioPatient))
+            {
+                ProcessedServices = new ObservableCollection<ProcessedServices>(result);
+            }
+            // А если выбрали, то только его услуги
+            else
+            {
+                var getIdPatient = DataBaseModel.Pacients.FirstOrDefault(w => w.FIO == fioPatient);
+                ProcessedServices = new ObservableCollection<ProcessedServices>(result.Where(w => w.Patient == getIdPatient.Id));
+            }
+        }
+
+        // При выборе услуги грузим соответствующий анализатор
+        public void LoadAnalysatorForService(string serviceName)
+        {
+            var getAnalysatorId = DataBaseModel.Services.FirstOrDefault(w => w.Service == serviceName);
+            var result = DataBaseModel.Analyzers.Where(w => w.Id == getAnalysatorId.Analysers);
+
+            Analysers = new ObservableCollection<AnalyserViewModel>();
+            foreach (var item in result)
+            {
+                Analysers.Add(new AnalyserViewModel(item));
+            }
         }
 
         // Метод для авторизации пользователя

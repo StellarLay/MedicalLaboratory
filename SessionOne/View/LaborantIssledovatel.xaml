@@ -8,8 +8,8 @@
         xmlns:local="clr-namespace:SessionOne.View"
         xmlns:UserControls="clr-namespace:SessionOne.UserControls" x:Class="SessionOne.View.LaborantIssledovatel"
         mc:Ignorable="d"
-        Title="LaborantIssledovatel" Height="700" Width="850" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" MinWidth="850" MinHeight="600"
-        d:DataContext="{d:DesignInstance {x:Type vm:ApplicationViewModel}}" WindowStyle="None">
+        Title="LaborantIssledovatel" Height="700" Width="850" WindowStartupLocation="CenterScreen" MinWidth="850" MinHeight="600"
+        d:DataContext="{d:DesignInstance {x:Type vm:ApplicationViewModel}}">
     <Window.Resources>
         <Style TargetType="{x:Type Label}">
             <Setter Property="FontFamily" Value="Comic Sans MS"/>
@@ -21,34 +21,62 @@
             <Setter Property="FontFamily" Value="Comic Sans MS"/>
         </Style>
     </Window.Resources>
+    <Window.Background>
+        <ImageBrush ImageSource="img/bg.jpg"/>
+    </Window.Background>
     <Grid>
-        <Label x:Name="timerLabel" Margin="557,10,10,0" VerticalAlignment="Top" Content="{Binding TimerValue, UpdateSourceTrigger=PropertyChanged}"/>
+        <!--
+                <Label x:Name="timerLabel" Margin="127,46,440.2,0" VerticalAlignment="Top" Content="{Binding TimerValue, UpdateSourceTrigger=PropertyChanged}" Height="36"/>
+        -->
+        <Label x:Name="timerLabel" Margin="127,46,440.2,0" VerticalAlignment="Top" Content="Время сеанса: 2ч:30м" Height="36" VerticalContentAlignment="Center"/>
         <Button x:Name="backBtn" Content="На главный экран" HorizontalAlignment="Left" Margin="22,594,0,0" VerticalAlignment="Top" Width="130" Height="35" Style="{DynamicResource ButtonStyle}" Foreground="#E5FFFFFF" Command="{Binding BackBtnCommand}" Cursor="Hand"/>
-        <Label x:Name="fioLabel" Content="Выберите пациента:" HorizontalAlignment="Left" Margin="22,164,0,0" VerticalAlignment="Top" Padding="0,5,5,5"/>
-        <ComboBox HorizontalAlignment="Left" Margin="22,195,0,0" VerticalAlignment="Top" Width="400" ItemsSource="{Binding DataBase.Pacients, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="FIO" SelectedValue="{Binding ValuePatientAnalyzer, Mode=TwoWay}" SelectedValuePath="FIO" FontSize="14" Height="30" Style="{DynamicResource ComboBoxStyle}">
+        <Label x:Name="fioLabel" Content="Выберите пациента:" HorizontalAlignment="Left" Margin="22,146,0,0" VerticalAlignment="Top" Padding="0,5,5,5"/>
+        <ComboBox Margin="22,177,427.2,0" VerticalAlignment="Top" ItemsSource="{Binding DataBase.Pacients, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="FIO" SelectedValue="{Binding ValuePatientAnalyzer, Mode=TwoWay}" SelectedValuePath="FIO" FontSize="14" Height="30" Style="{DynamicResource ComboBoxStyle}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectionChanged">
                     <i:InvokeCommandAction Command="{Binding SelectedPatientCommand}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </ComboBox>
-        <GroupBox x:Name="AnalyzersGroup" Header="Доступные анализаторы" HorizontalAlignment="Left" Height="127" Margin="475,195,0,0" VerticalAlignment="Top" Width="338">
-            <ItemsControl ItemsSource="{Binding DataBase.Analysers}" Margin="10,10,0,0">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <RadioButton Content="{Binding Name}" HorizontalAlignment="Left" Width="258" Margin="0,10,0,0" GroupName="AnalysatorsGroup">
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="Checked">
-                                    <i:InvokeCommandAction Command="{Binding DataContext.CheckAnalyserCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding}"/>
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-                        </RadioButton>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+        <GroupBox x:Name="AnalyzersGroup" Header="Доступные анализаторы" Height="127" Margin="0,428,36.2,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="338">
+            <ScrollViewer>
+                <ScrollViewer.Style>
+                    <Style>
+                        <Setter Property="ScrollViewer.Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ServiceValue}" Value="">
+                                <Setter Property="ScrollViewer.Visibility" Value="Hidden"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ScrollViewer.Style>
+                <ItemsControl ItemsSource="{Binding DataBase.Analysers}" Margin="10,10,0,0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <RadioButton Content="{Binding Name}" HorizontalAlignment="Left" Width="258" Margin="0,10,0,0" GroupName="AnalysatorsGroup">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Checked">
+                                        <i:InvokeCommandAction Command="{Binding DataContext.CheckAnalyserCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </RadioButton>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         </GroupBox>
-        <GroupBox Header="Доступные исследования" HorizontalAlignment="Left" Height="215" Margin="475,327,0,0" VerticalAlignment="Top" Width="338">
+        <GroupBox Header="Доступные исследования" HorizontalAlignment="Right" Height="215" Margin="0,177,36.2,0" VerticalAlignment="Top" Width="338">
             <ScrollViewer Margin="0,10,0,0">
+                <ScrollViewer.Style>
+                    <Style>
+                        <Setter Property="ScrollViewer.Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ValuePatientAnalyzer}" Value="">
+                                <Setter Property="ScrollViewer.Visibility" Value="Hidden"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ScrollViewer.Style>
                 <ItemsControl ItemsSource="{Binding DataBase.ServicesPatientFilter}" Margin="10,10,0,0">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -65,18 +93,38 @@
             </ScrollViewer>
         </GroupBox>
         <Button x:Name="SendAnalysBtn" Content="Отправить на исследование" Margin="593,589,31.6,0" VerticalAlignment="Top" Height="40" FontSize="14" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Cursor="Hand" Command="{Binding SendAnalyseCommand}"/>
-        <GroupBox x:Name="ServicesSuccessGroup" Header="Невыполненные услуги" HorizontalAlignment="Left" Height="167" Margin="22,255,0,0" VerticalAlignment="Top" Width="400">
-            <Grid Margin="0,10,-2,0">
-                <Label x:Name="codeServiceLabel" Content="Услуга" HorizontalAlignment="Left" Margin="28,24,0,0" VerticalAlignment="Top"/>
-                <Label x:Name="statusServiceLabel" Content="Статус" HorizontalAlignment="Left" Margin="227,24,0,0" VerticalAlignment="Top" Width="94"/>
-                <ScrollViewer Margin="10,56,10,10">
-                    <ItemsControl ItemsSource="{Binding DataBase.NotSuccessServ}" Height="58">
+        <GroupBox x:Name="ServicesSuccessGroup" Header="Невыполненные услуги" Height="167" Margin="22,237,421.2,0" VerticalAlignment="Top">
+            <Grid Margin="0,10,0,0">
+                <Grid.Style>
+                    <Style>
+                        <Setter Property="Grid.Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding AnalysatorValue}" Value="">
+                                <Setter Property="Grid.Visibility" Value="Hidden"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                <Grid Height="30" Margin="10,13,8,91" Width="370">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="185*"/>
+                        <ColumnDefinition Width="185*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label x:Name="codeServiceLabel" Content="Услуга" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Grid.Column="0"/>
+                    <Label x:Name="statusServiceLabel" Content="Статус" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center"  Grid.Column="1"/>
+                </Grid>
+                <ScrollViewer Margin="10,40,10,10" VerticalScrollBarVisibility="Auto" Width="370">
+                    <ItemsControl ItemsSource="{Binding DataBase.NotSuccessServ}" Height="70" Width="370">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="300">
-                                    <TextBlock Text="{Binding Service}" HorizontalAlignment="Left" Margin="0"/>
-                                    <TextBlock Text="{Binding Status}" Margin="160,0,0,0" HorizontalAlignment="Left"/>
-                                </StackPanel>
+                                <Grid Height="25" Margin="0" Width="370">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="185*"/>
+                                        <ColumnDefinition Width="185*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Service}" HorizontalAlignment="Center" Margin="0" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding Status}" Margin="0" HorizontalAlignment="Center" Grid.Column="1" VerticalAlignment="Center"/>
+                                </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -95,21 +143,55 @@
                 </Style>
             </ProgressBar.Style>
         </ProgressBar>
-        <Label Content="{Binding UserName, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,136.6,577" VerticalAlignment="Bottom" Height="36" HorizontalAlignment="Right" FontSize="13" Width="238" VerticalContentAlignment="Center"/>
-        <Image Margin="718,65,31.6,555" Source="{Binding UserImage}" Width="100" Height="80"/>
-        <Image HorizontalAlignment="Left" Height="82" Margin="22,63,0,0" VerticalAlignment="Top" Width="100" Source="img/logo.png">
+        <Label Content="{Binding UserName, UpdateSourceTrigger=PropertyChanged}" Margin="0,46,141.2,0" VerticalAlignment="Top" Height="36" FontSize="13" VerticalContentAlignment="Center" HorizontalAlignment="Right" Width="233"/>
+        <Image Margin="0,26,36.2,0" Source="img/users/laborant_2.png" Height="75" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100">
+            <Image.Clip>
+                <RectangleGeometry RadiusX="10" RadiusY="10" Rect="0,0,100,75"/>
+            </Image.Clip>
+        </Image>
+        <Image HorizontalAlignment="Left" Height="82" Margin="22,21,0,0" VerticalAlignment="Top" Width="100" Source="img/logo.png">
             <Image.OpacityMask>
                 <ImageBrush ImageSource="img/logo.png"/>
             </Image.OpacityMask>
         </Image>
-        <UserControls:SystemButtons Height="34" Margin="0,10,10,0" VerticalAlignment="Top" Width="100" HorizontalAlignment="Right"/>
-        <GroupBox x:Name="SuccessServicesGroup" Header="Услуги в работе" HorizontalAlignment="Left" Height="115" Margin="22,427,0,0" VerticalAlignment="Top" Width="400">
+        <GroupBox x:Name="SuccessServicesGroup" Header="Услуги в работе" Height="127" Margin="22,428,421.2,0" VerticalAlignment="Top">
             <StackPanel Margin="0,0,-2,-0.2">
-                <StackPanel Height="27" Margin="0,5,-0.4,0" Orientation="Horizontal">
-                    <Label x:Name="statusLabel" Content="Статус" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0"/>
-                    <Label x:Name="resultLabel" Content="Результат" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,0,0,0"/>
-                </StackPanel>
+                <Grid Height="34" Margin="0,5,0,0" Width="345">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="115*"/>
+                        <ColumnDefinition Width="115*"/>
+                        <ColumnDefinition Width="115*"/>
+                        <ColumnDefinition Width="115*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label x:Name="serviceLabel" Content="Услуга" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Grid.Column="0"/>
+                    <Label x:Name="statusLabel" Content="Статус" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Grid.Column="1"/>
+                    <Label x:Name="resultLabel" Content="Результат" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Grid.Column="2"/>
+                    <Label x:Name="successLabel" Content="Одобрение" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Grid.Column="3"/>
+                </Grid>
+                <ScrollViewer Margin="10,0,10,10" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding DataBase.ProcessedServices}" Height="70">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Height="34" Margin="0" Width="345">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="115*"/>
+                                        <ColumnDefinition Width="115*"/>
+                                        <ColumnDefinition Width="115*"/>
+                                        <ColumnDefinition Width="115*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Services}" HorizontalAlignment="Center" Margin="0" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding StatusService}" HorizontalAlignment="Center" Margin="0" Grid.Column="1" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding Result}" Margin="0" HorizontalAlignment="Center" Grid.Column="2" VerticalAlignment="Center"/>
+                                    <Button x:Name="SuccessBtn" Content="Одобрить" Grid.Column="3" Height="20" Width="85" Background="#FF498C51" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Cursor="Hand"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
             </StackPanel>
         </GroupBox>
+        <Label Content="&#xf063;" Margin="0,404,200.2,0" VerticalAlignment="Top" FontFamily="FontAwesome" Height="24" Foreground="#D8000000" HorizontalAlignment="Right" Width="21"/>
+        <Label Content="&#xf061;" Margin="0,183,389.2,0" VerticalAlignment="Top" FontFamily="FontAwesome" Height="24" Foreground="#D8000000" HorizontalAlignment="Right" Width="21"/>
+        <Button x:Name="manualBtn" Content="Руководство по работе" Height="40" Margin="0,121,41.2,0" VerticalAlignment="Top" Background="#FF498C51" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" HorizontalAlignment="Right" Width="180" Cursor="Hand" Command="{Binding OpenInstructionCommand}"/>
     </Grid>
 </Window>

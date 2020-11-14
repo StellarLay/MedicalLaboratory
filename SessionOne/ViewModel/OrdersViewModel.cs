@@ -20,6 +20,7 @@ namespace SessionOne.ViewModel
             StatusOrder = model.StatusOrder;
             StatusService = model.StatusService;
             TimeDay = model.TimeDay;
+            Result = model.Result;
         }
 
         public int Id { get; set; }
@@ -29,5 +30,6 @@ namespace SessionOne.ViewModel
         public string StatusOrder { get; set; }
         public string StatusService { get; set; }
         public Nullable<int> TimeDay { get; set; }
+        public string Result { get; set; }
     }
 }

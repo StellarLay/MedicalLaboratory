@@ -37,11 +37,16 @@ namespace SessionOne.ViewModel
             SelectedFIOCommand = new RelayCommand<PacientsViewModel>(SelectedPacient);
             SendAnalyseCommand = new RelayCommand<object>(_ => SendAnalyse());
             SelectedPatientCommand = new RelayCommand<PacientsViewModel>(SelectedPatient);
+            OpenInstructionCommand = new RelayCommand<object>(_=> OpenInstructionPage());
 
-            MaterialValue = "";
             // Подгрузим приветствие пользователя
             UserName = "Добро пожаловать, " + App.username + "!";
             UserImage = App.userimage;
+
+            MaterialValue = "";
+            ValuePatientAnalyzer = "";
+            ServiceValue = "";
+            AnalysatorValue = "";
         }
 
         // Commands
@@ -56,6 +61,7 @@ namespace SessionOne.ViewModel
         public ICommand SelectedFIOCommand { get; }
         public ICommand SendAnalyseCommand { get; }
         public ICommand SelectedPatientCommand { get; }
+        public ICommand OpenInstructionCommand { get; }
 
 
         /// <summary>
@@ -125,10 +131,26 @@ namespace SessionOne.ViewModel
             }
         }
 
+        // Открываем инструкцию для работы лаборанта-исследователя
+        private void OpenInstructionPage()
+        {
+            InstructionPage page = new InstructionPage();
+            var cur = App.Current.Windows.OfType<Window>().FirstOrDefault(o => o.IsActive);
+            if(cur.Name == "ManualForm")
+            {
+                cur.Close();
+            }
+            else
+            {
+                page.Show();
+            }
+        }
+
         // Отлавливаем выбранного пациента в анализаторе
         private void SelectedPatient(PacientsViewModel pacient)
         {
             DataBase.LoadServicesAnalyser(ValuePatientAnalyzer);
+            DataBase.NotSuccessService(AnalysatorValue, ValuePatientAnalyzer);
         }
 
         // Создаем новый объект класса Pacients и добавляем его
@@ -161,13 +183,18 @@ namespace SessionOne.ViewModel
         // Отлавливаем выбранный анализатор
         private void CheckSelectAnalyser(AnalyserViewModel analyser) {
             AnalysatorValue = analyser.Name;
-            DataBase.NotSuccessService(AnalysatorValue);
+            // Подгружаем невыполненные услуги
+            DataBase.NotSuccessService(AnalysatorValue, ValuePatientAnalyzer);
+
+            // Подгружаем услуги в работе
+            DataBase.ServicesProcess(AnalysatorValue, ValuePatientAnalyzer);
         }
 
         // Отлавливаем выбранную услугу
         private void CheckSelectService(ServiceFilterPatient service)
         {
-             ServiceValue = service.Service;
+            ServiceValue = service.Service;
+            DataBase.LoadAnalysatorForService(ServiceValue);
         }
 
         // Отлавливаем выбранного пациента

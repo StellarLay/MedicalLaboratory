@@ -21,6 +21,8 @@ namespace SessionOne.ViewModel
             get => _Status;
             set => SetField(ref _Status, value);
         }
+
+        public int Patient { get; set; }
         public string Analysator { get; set; }
     }
 }

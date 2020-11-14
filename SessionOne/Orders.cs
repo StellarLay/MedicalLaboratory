@@ -21,6 +21,7 @@ namespace SessionOne
         public string StatusOrder { get; set; }
         public string StatusService { get; set; }
         public Nullable<int> TimeDay { get; set; }
+        public string Result { get; set; }
     
         public virtual Pacients Pacients { get; set; }
         public virtual Services Services1 { get; set; }

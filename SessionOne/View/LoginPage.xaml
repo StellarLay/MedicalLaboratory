@@ -35,7 +35,7 @@
             <Label x:Name="passwordLabel" Content="Пароль" Margin="0,20,0,0"/>
             <PasswordBox x:Name="passBox" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Width="300" Height="23" BorderThickness="0,0,0,1" Padding="3,0,0,0" Background="{x:Null}"/>
         </StackPanel>
-        <Button x:Name="LoginBtn" Content="Войти" Margin="310,370,310,0" VerticalAlignment="Top" Height="45" FontSize="14" Background="#FF498C51" Foreground="#E5FFFFFF" Cursor="Hand" Style="{DynamicResource ButtonStyle}" Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=passBox}"/>
+        <Button x:Name="LoginBtn" Content="Войти" Margin="310,370,310,0" VerticalAlignment="Top" Height="45" FontSize="14" Background="#FF498C51" Foreground="#E5FFFFFF" Cursor="Hand" Style="{DynamicResource ButtonStyle}" Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=passBox}" IsDefault="True"/>
         <StackPanel x:Name="CaptchaPanel" HorizontalAlignment="Center" Height="144" Margin="247,300,247,0" VerticalAlignment="Top" Width="300" RenderTransformOrigin="0.5,0.5">
             <StackPanel.Style>
                 <Style>

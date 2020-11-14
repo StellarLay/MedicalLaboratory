@@ -1,0 +1,35 @@
+﻿<Window x:Name="ManualForm" x:Class="SessionOne.View.InstructionPage"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SessionOne.View"
+        mc:Ignorable="d"
+        Title="InstructionPage" Height="350" Width="600" WindowStyle="None" WindowStartupLocation="CenterScreen" MinWidth="600" MinHeight="350">
+    <Grid>
+        <Label x:Name="manualLabel" Content="Инструкция по работе с анализатором" Margin="15,15,15,0" VerticalAlignment="Top" FontSize="14" HorizontalContentAlignment="Center"/>
+        <StackPanel Margin="15,50,14.6,73">
+            <Label Content="1. Выберите пациента" Margin="15,15,15,0" VerticalAlignment="Top"/>
+            <Label Content="2. Выберите исследование, которое необходимо отправить на анализатор" Margin="15,5,15,0" VerticalAlignment="Top"/>
+            <Label Content="3. Выберите соответствующий анализатор" Margin="15,5,15,0" VerticalAlignment="Top"/>
+            <Label Content="4. Нажмите кнопку &quot;Отправить на исследование&quot;" Margin="15,5,15,0" VerticalAlignment="Top"/>
+            <Label Content="5. Дождитесь результатов работы анализатора" Margin="15,5,15,0" VerticalAlignment="Top"/>
+            <TextBlock Text="6. В окне &quot;Список услуг в работе&quot; у отправленной услуги появится статус &quot;Завершено&quot; и если вы согласны с результатом, нажмите кнопку &quot;Одобрить&quot;" Margin="15,5,15,0" VerticalAlignment="Top" Height="42" TextWrapping="Wrap" Padding="5,0,0,0"/>
+        </StackPanel>
+        <Button Content="Всё понятно" Margin="227,287,226.6,0" VerticalAlignment="Top" Height="30" Background="#FF498C51" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Cursor="Hand" Command="{Binding OpenInstructionCommand}"/>
+    </Grid>
+    <Window.Resources>
+        <Style TargetType="{x:Type Label}">
+            <Setter Property="FontFamily" Value="Comic Sans MS"/>
+        </Style>
+        <Style TargetType="{x:Type TextBox}">
+            <Setter Property="FontFamily" Value="Comic Sans MS"/>
+        </Style>
+        <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="FontFamily" Value="Comic Sans MS"/>
+        </Style>
+    </Window.Resources>
+    <Window.Background>
+        <ImageBrush ImageSource="img/bg.jpg"/>
+    </Window.Background>
+</Window>
