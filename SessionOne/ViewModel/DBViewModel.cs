@@ -19,12 +19,45 @@ namespace SessionOne.ViewModel
     /// </summary>
     class DBViewModel : VM
     {
+        public DispatcherTimer timeSession = new DispatcherTimer();
+
         public MedicalLaboratoryEntities DataBaseModel;
         public DBViewModel()
         {
             // Инициализируем наш контекст данных, чтобы в дальнейшем с ним работать
             DataBaseModel = new MedicalLaboratoryEntities();
             LoadData();
+
+            timeSession.Tick += new EventHandler(session_time);
+            timeSession.Interval = new TimeSpan(0, 0, 0, 0, 1);
+        }
+
+        // Таймер времени сеанса
+        public int ms;
+        public int s;
+        public int min;
+        public int h;
+        private void session_time(object sender, EventArgs e)
+        {
+            if(ms == 60)
+            {
+                s++;
+                ms = 0;
+            }
+            else if(s == 60)
+            {
+                min++;
+                s = 0;
+            }
+            else if(min == 60)
+            {
+                h++;
+                min = 0;
+            }
+            else
+            {
+                ms++;
+            }
         }
 
         // Коллекции, в которые собираются данные из определенных таблиц БД, благодаря чему мы можем работать независимо от SQL Server
@@ -113,13 +146,13 @@ namespace SessionOne.ViewModel
             }
         }
 
-        // Отображаем невыполненные услуги в зависимости от выбранного анализатора
+        // Отображаем статус услуг в зависимости от выбранного анализатора
         public void NotSuccessService(string analysatorValue, string fioPatient)
         {
             var result = from order in DataBaseModel.Orders
                          join service in DataBaseModel.Services on order.Services equals service.Code
                          join analyser in DataBaseModel.Analyzers on service.Analysers equals analyser.Id
-                         where analyser.Name == analysatorValue && order.StatusService == "Не выполнена"
+                         where analyser.Name == analysatorValue && order.StatusService == "Выполнена" || order.StatusService == "Не выполнена"
                          select new NotSuccessServices
                          {
                              Service = service.Service,
@@ -147,7 +180,7 @@ namespace SessionOne.ViewModel
             var result = from order in DataBaseModel.Orders
                          join service in DataBaseModel.Services on order.Services equals service.Code
                          join analyser in DataBaseModel.Analyzers on service.Analysers equals analyser.Id
-                         where analyser.Name == analysatorValue && order.StatusService != "Не выполнена"
+                         where analyser.Name == analysatorValue && order.StatusService == "Завершено"
                          select new ProcessedServices
                          {
                              Services = service.Service,
@@ -197,6 +230,7 @@ namespace SessionOne.ViewModel
                 typename = types.Name;
                 App.username = user.name;
                 App.userimage = user.MainImage;
+                App.roleName = types.Name;
 
                 // Когда прогрес бар загрузился
                 if(statusLoading)
@@ -244,7 +278,23 @@ namespace SessionOne.ViewModel
             return true;
         }
 
+        // Меняем статус услуги, если одобрена
+        public void ChangeStatusService(string servicename, string patient, string analysator)
+        {
+            var patientId = DataBaseModel.Pacients.FirstOrDefault(w => w.FIO == patient);
+            var serviceId = DataBaseModel.Services.FirstOrDefault(w => w.Service == servicename);
 
+            var item = DataBaseModel.Orders.FirstOrDefault(w => w.PacientId == patientId.Id && w.Services == serviceId.Code);
+            item.StatusService = "Выполнена";
+            DataBaseModel.SaveChanges();
+
+            // Обновляем коллекцию
+            NotSuccessService(analysator, patient);
+
+            // Удаляем с коллекции завершенных услуг выбранную
+            var removeItem = ProcessedServices.FirstOrDefault(w => w.Services == servicename && w.Patient == patientId.Id);
+            ProcessedServices.Remove(removeItem);
+        }
 
 
 

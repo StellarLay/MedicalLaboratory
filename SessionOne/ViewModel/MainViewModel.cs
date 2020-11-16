@@ -16,6 +16,7 @@ namespace SessionOne.ViewModel
     class ApplicationViewModel : VM
     {
         DispatcherTimer timer = new DispatcherTimer();
+        DispatcherTimer timerSession = new DispatcherTimer();
         public DBViewModel DataBase { get; }
 
         public ApplicationViewModel()
@@ -24,6 +25,8 @@ namespace SessionOne.ViewModel
 
             timer.Tick += new EventHandler(timer_bar);
             timer.Interval = new TimeSpan(0, 0, 0, 0, 1);
+            timerSession.Tick += new EventHandler(timer_session);
+            timerSession.Interval = new TimeSpan(0, 0, 0, 0, 1);
 
             // При отрабатывании команды мы попадаем в определенный метод и выполняется определенная логика
             LoginCommand = new RelayCommand<object>(Login);
@@ -38,6 +41,7 @@ namespace SessionOne.ViewModel
             SendAnalyseCommand = new RelayCommand<object>(_ => SendAnalyse());
             SelectedPatientCommand = new RelayCommand<PacientsViewModel>(SelectedPatient);
             OpenInstructionCommand = new RelayCommand<object>(_=> OpenInstructionPage());
+            SuccessServiceCommand = new RelayCommand<ProcessedServices>(SuccessServiceBtn);
 
             // Подгрузим приветствие пользователя
             UserName = "Добро пожаловать, " + App.username + "!";
@@ -47,6 +51,35 @@ namespace SessionOne.ViewModel
             ValuePatientAnalyzer = "";
             ServiceValue = "";
             AnalysatorValue = "";
+            WarningMessage = "";
+
+            // Запуск таймера сеанса лаборантов
+            var cur = App.Current.Windows.OfType<Window>().FirstOrDefault(o => o.IsActive);
+            if(App.roleName == "Лаборант исследователь")
+            {
+                timerSession.Start();
+            }
+        }
+
+        // Время сеанса
+        private void timer_session(object sender, EventArgs e)
+        {
+            DataBase.timeSession.Start();
+            var cur = App.Current.Windows.OfType<Window>().FirstOrDefault(o => o.IsActive);
+            if (DataBase.min == 2)
+            {
+                LoginPage page = new LoginPage();
+                page.Show();
+                cur.Close();
+                WarningMessage = "";
+                timerSession.Stop();
+            }
+            else if(DataBase.min == 1)
+            {
+                WarningMessage = "До окончания сеанса осталась 1 минута";
+            }
+            TimerValue = "Время сеанса: " + DataBase.h + "ч : " + DataBase.min + "м";
+            TimerValue2 = DataBase.ms.ToString() + DataBase.s.ToString();
         }
 
         // Commands
@@ -62,6 +95,7 @@ namespace SessionOne.ViewModel
         public ICommand SendAnalyseCommand { get; }
         public ICommand SelectedPatientCommand { get; }
         public ICommand OpenInstructionCommand { get; }
+        public ICommand SuccessServiceCommand { get; }
 
 
         /// <summary>
@@ -151,6 +185,19 @@ namespace SessionOne.ViewModel
         {
             DataBase.LoadServicesAnalyser(ValuePatientAnalyzer);
             DataBase.NotSuccessService(AnalysatorValue, ValuePatientAnalyzer);
+        }
+
+        // Кнопка одобрения результата
+        private void SuccessServiceBtn(ProcessedServices service)
+        {
+            if(MessageBox.Show(
+                "Одобрить результат?",
+                "Информация",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                DataBase.ChangeStatusService(service.Services, ValuePatientAnalyzer, AnalysatorValue);
+            }
         }
 
         // Создаем новый объект класса Pacients и добавляем его
@@ -475,6 +522,40 @@ namespace SessionOne.ViewModel
             {
                 valuepacientanalyzer = value;
                 OnPropertyChanged("ValuePatientAnalyzer");
+            }
+        }
+
+        // Свойство времени сеанса
+        private string _TimerValue;
+        public string TimerValue
+        {
+            get => _TimerValue;
+            set
+            {
+                _TimerValue = value;
+                OnPropertyChanged("TimerValue");
+            }
+        }
+
+        private string _TimerValue2;
+        public string TimerValue2
+        {
+            get => _TimerValue2;
+            set
+            {
+                _TimerValue2 = value;
+                OnPropertyChanged("TimerValue2");
+            }
+        }
+
+        private string _WarningMessage;
+        public string WarningMessage
+        {
+            get => _WarningMessage;
+            set
+            {
+                _WarningMessage = value;
+                OnPropertyChanged("WarningMessage");
             }
         }
     }

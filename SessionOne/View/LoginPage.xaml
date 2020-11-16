@@ -21,8 +21,8 @@
         <ImageBrush ImageSource="img/bg.jpg"/>
     </Window.Background>
     <Grid>
-        <StackPanel HorizontalAlignment="Center" Height="100" Margin="150,44,150,0" VerticalAlignment="Top" Width="500" Orientation="Horizontal">
-            <Image Width="100" Source="img/logo.png">
+        <StackPanel Height="100" Margin="150,44,150,0" VerticalAlignment="Top" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Image Width="80" Source="img/logo.png" Height="80">
                 <Image.OpacityMask>
                     <ImageBrush ImageSource="img/logo.png"/>
                 </Image.OpacityMask>
@@ -35,7 +35,7 @@
             <Label x:Name="passwordLabel" Content="Пароль" Margin="0,20,0,0"/>
             <PasswordBox x:Name="passBox" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Width="300" Height="23" BorderThickness="0,0,0,1" Padding="3,0,0,0" Background="{x:Null}"/>
         </StackPanel>
-        <Button x:Name="LoginBtn" Content="Войти" Margin="310,370,310,0" VerticalAlignment="Top" Height="45" FontSize="14" Background="#FF498C51" Foreground="#E5FFFFFF" Cursor="Hand" Style="{DynamicResource ButtonStyle}" Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=passBox}" IsDefault="True"/>
+        <Button x:Name="LoginBtn" Content="Войти" Margin="310,370,310,0" VerticalAlignment="Top" Height="45" FontSize="14" Background="#FF277AA5" Foreground="#E5FFFFFF" Cursor="Hand" Style="{DynamicResource ButtonStyle}" Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=passBox}" IsDefault="True"/>
         <StackPanel x:Name="CaptchaPanel" HorizontalAlignment="Center" Height="144" Margin="247,300,247,0" VerticalAlignment="Top" Width="300" RenderTransformOrigin="0.5,0.5">
             <StackPanel.Style>
                 <Style>

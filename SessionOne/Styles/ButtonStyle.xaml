@@ -10,11 +10,11 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <SolidColorBrush x:Key="Button.Static.Background" Color="#FF498C51"/>
+    <SolidColorBrush x:Key="Button.Static.Background" Color="#FF277AA5"/>
     <SolidColorBrush x:Key="Button.Static.Border" Color="Transparent"/>
-    <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FF42894B"/>
+    <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FF2B7399"/>
     <SolidColorBrush x:Key="Button.MouseOver.Border" Color="Transparent"/>
-    <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FF437C4A"/>
+    <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FF296B8C"/>
     <SolidColorBrush x:Key="Button.Pressed.Border" Color="Transparent"/>
     <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
     <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
@@ -36,6 +36,7 @@
                         <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                     </Border>
                     <ControlTemplate.Triggers>
+                        <!-- Кнопка авторизации -->
                         <Trigger Property="Name" Value="LoginBtn">
                             <Setter Property="Visibility" Value="Visible"/>
                         </Trigger>
@@ -43,7 +44,7 @@
                             <Setter Property="Visibility" Value="Hidden"/>
                         </DataTrigger>
                         <Trigger Property="IsDefaulted" Value="true">
-                            <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="Transparent"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="true">
                             <Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}"/>

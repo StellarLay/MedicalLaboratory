@@ -16,7 +16,7 @@
             <Label Content="5. Дождитесь результатов работы анализатора" Margin="15,5,15,0" VerticalAlignment="Top"/>
             <TextBlock Text="6. В окне &quot;Список услуг в работе&quot; у отправленной услуги появится статус &quot;Завершено&quot; и если вы согласны с результатом, нажмите кнопку &quot;Одобрить&quot;" Margin="15,5,15,0" VerticalAlignment="Top" Height="42" TextWrapping="Wrap" Padding="5,0,0,0"/>
         </StackPanel>
-        <Button Content="Всё понятно" Margin="227,287,226.6,0" VerticalAlignment="Top" Height="30" Background="#FF498C51" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Cursor="Hand" Command="{Binding OpenInstructionCommand}"/>
+        <Button Content="Всё понятно" Margin="227,287,226.6,0" VerticalAlignment="Top" Height="30" Background="#FF277AA5" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Cursor="Hand" Command="{Binding OpenInstructionCommand}"/>
     </Grid>
     <Window.Resources>
         <Style TargetType="{x:Type Label}">
