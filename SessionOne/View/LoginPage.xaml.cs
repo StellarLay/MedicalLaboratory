@@ -31,5 +31,11 @@ namespace SessionOne.View
         {
             this.DragMove();
         }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            loginBox.Text = "srobken8";
+            passBox.Password = "Cbmj3Yi";
+        }
     }
 }

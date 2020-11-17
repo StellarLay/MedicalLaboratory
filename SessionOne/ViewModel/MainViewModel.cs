@@ -17,6 +17,7 @@ namespace SessionOne.ViewModel
     {
         DispatcherTimer timer = new DispatcherTimer();
         DispatcherTimer timerSession = new DispatcherTimer();
+        DispatcherTimer timerAnalyse = new DispatcherTimer();
         public DBViewModel DataBase { get; }
 
         public ApplicationViewModel()
@@ -27,6 +28,8 @@ namespace SessionOne.ViewModel
             timer.Interval = new TimeSpan(0, 0, 0, 0, 1);
             timerSession.Tick += new EventHandler(timer_session);
             timerSession.Interval = new TimeSpan(0, 0, 0, 0, 1);
+            timerAnalyse.Tick += new EventHandler(timer_analyse);
+            timerAnalyse.Interval = new TimeSpan(0, 0, 0, 0, 1);
 
             // При отрабатывании команды мы попадаем в определенный метод и выполняется определенная логика
             LoginCommand = new RelayCommand<object>(Login);
@@ -54,32 +57,11 @@ namespace SessionOne.ViewModel
             WarningMessage = "";
 
             // Запуск таймера сеанса лаборантов
-            var cur = App.Current.Windows.OfType<Window>().FirstOrDefault(o => o.IsActive);
             if(App.roleName == "Лаборант исследователь")
             {
                 timerSession.Start();
+                App.roleName = "";
             }
-        }
-
-        // Время сеанса
-        private void timer_session(object sender, EventArgs e)
-        {
-            DataBase.timeSession.Start();
-            var cur = App.Current.Windows.OfType<Window>().FirstOrDefault(o => o.IsActive);
-            if (DataBase.min == 2)
-            {
-                LoginPage page = new LoginPage();
-                page.Show();
-                cur.Close();
-                WarningMessage = "";
-                timerSession.Stop();
-            }
-            else if(DataBase.min == 1)
-            {
-                WarningMessage = "До окончания сеанса осталась 1 минута";
-            }
-            TimerValue = "Время сеанса: " + DataBase.h + "ч : " + DataBase.min + "м";
-            TimerValue2 = DataBase.ms.ToString() + DataBase.s.ToString();
         }
 
         // Commands
@@ -114,6 +96,51 @@ namespace SessionOne.ViewModel
                 ErrorMessage = "";
                 timer.Start();
             }
+        }
+
+        // Таймер прогресс бара анализатора
+        int msAn = 0;
+        int sAn = 0;
+        private void timer_analyse(object sender, EventArgs e)
+        {
+            if (msAn == 60)
+            {
+                sAn++;
+                msAn = 0;
+            }
+            else if (sAn == 4)
+            {
+                IsProcess = false;
+                IsIndeterminate = false;
+                IsVisibleAnalyseBtn = "Visible";
+                sAn = 0;
+            }
+            else
+            {
+                msAn++;
+            }
+        }
+
+        // Время сеанса
+        private void timer_session(object sender, EventArgs e)
+        {
+            DataBase.timeSession.Start();
+            if (DataBase.min == 2)
+            {
+                App.statusSession = true;
+                var cur = App.Current.Windows.OfType<Window>().FirstOrDefault(o => o.IsActive);
+                LoginPage page = new LoginPage();
+                page.Show();
+                cur.Close();
+                WarningMessage = "";
+                timerSession.Stop();
+            }
+            else if (DataBase.min == 1)
+            {
+                WarningMessage = "До окончания сеанса осталась 1 минута";
+            }
+            TimerValue = "Время сеанса: " + DataBase.h + "ч : " + DataBase.min + "м";
+            TimerValue2 = DataBase.ms.ToString() + DataBase.s.ToString();
         }
 
         // Таймер прогресс бара авторизации
@@ -187,6 +214,36 @@ namespace SessionOne.ViewModel
             DataBase.NotSuccessService(AnalysatorValue, ValuePatientAnalyzer);
         }
 
+        // Отлавливаем выбранный анализатор
+        private void CheckSelectAnalyser(AnalyserViewModel analyser)
+        {
+            AnalysatorValue = analyser.Name;
+            // Подгружаем невыполненные услуги
+            DataBase.NotSuccessService(AnalysatorValue, ValuePatientAnalyzer);
+
+            // Подгружаем услуги в работе
+            DataBase.ServicesProcess(AnalysatorValue, ValuePatientAnalyzer);
+
+            if(!string.IsNullOrEmpty(AnalysatorValue) && !string.IsNullOrEmpty(ValuePatientAnalyzer) && !string.IsNullOrEmpty(ServiceValue))
+            {
+                IsEnableAnalyseBtn = true;
+            }
+            else
+            {
+                IsEnableAnalyseBtn = false;
+            }
+        }
+
+        // Отлавливаем выбранную услугу
+        private void CheckSelectService(ServiceFilterPatient service)
+        {
+            ServiceValue = service.Service;
+            DataBase.LoadAnalysatorForService(ServiceValue);
+        }
+
+        // Отлавливаем выбранного пациента
+        private void SelectedPacient(PacientsViewModel pacient) => ValuePacient = pacient.FIO;
+
         // Кнопка одобрения результата
         private void SuccessServiceBtn(ProcessedServices service)
         {
@@ -216,46 +273,35 @@ namespace SessionOne.ViewModel
             };
             DataBase.AddPacient(pacient);
         }
+        
+        // Открыть форму заказов
         private void OpenOrderForm()
         {
             AddOrderPage page = new AddOrderPage();
             page.Show();
         }
 
-        private void CreateOrder()
-        {
-            DataBase.CreateOrder(SelectionFioPacient, SelectService);
-        }
-
-        // Отлавливаем выбранный анализатор
-        private void CheckSelectAnalyser(AnalyserViewModel analyser) {
-            AnalysatorValue = analyser.Name;
-            // Подгружаем невыполненные услуги
-            DataBase.NotSuccessService(AnalysatorValue, ValuePatientAnalyzer);
-
-            // Подгружаем услуги в работе
-            DataBase.ServicesProcess(AnalysatorValue, ValuePatientAnalyzer);
-        }
-
-        // Отлавливаем выбранную услугу
-        private void CheckSelectService(ServiceFilterPatient service)
-        {
-            ServiceValue = service.Service;
-            DataBase.LoadAnalysatorForService(ServiceValue);
-        }
-
-        // Отлавливаем выбранного пациента
-        private void SelectedPacient(PacientsViewModel pacient) => ValuePacient = pacient.FIO;
+        // Создание заказа
+        private void CreateOrder() => DataBase.CreateOrder(SelectionFioPacient, SelectService);
 
         // Отправляем данные на анализ
-        private void SendAnalyse()
+        private async void SendAnalyse()
         {
-            //DataBase.AnalyseOrder(ValuePacient, AnalysatorValue, ServiceValue);
+            bool result = await DataBase.AnalyseOrder(ValuePatientAnalyzer, AnalysatorValue, ServiceValue);
 
-            //if(DataBase.l != 1)
-            //{
-            //    timer.Start();
-            //}
+            if(result == false)
+            {
+                AnalyseMessage = DataBase.analyseMessage;
+                IsVisibleAnalyseBtn = "Visible";
+            }
+            else
+            {
+                IsIndeterminate = true;
+                IsProcess = true;
+                timerAnalyse.Start();
+                IsVisibleAnalyseBtn = "Hidden";
+                AnalyseMessage = "";
+            }
         }
 
         // Properties
@@ -281,7 +327,7 @@ namespace SessionOne.ViewModel
             }
         }
 
-        // Progress bar
+        // Progress bar status
         private bool isindeterminate;
         public bool IsIndeterminate
         {
@@ -522,6 +568,50 @@ namespace SessionOne.ViewModel
             {
                 valuepacientanalyzer = value;
                 OnPropertyChanged("ValuePatientAnalyzer");
+            }
+        }
+
+        private string _AnalyseMessage;
+        public string AnalyseMessage
+        {
+            get => _AnalyseMessage;
+            set
+            {
+                _AnalyseMessage = value;
+                OnPropertyChanged("AnalyseMessage");
+            }
+        }
+
+        private bool _IsEnableAnalyseBtn;
+        public bool IsEnableAnalyseBtn
+        {
+            get => _IsEnableAnalyseBtn;
+            set
+            {
+                _IsEnableAnalyseBtn = value;
+                OnPropertyChanged("IsEnableAnalyseBtn");
+            }
+        }
+
+        private string _IsVisibleAnalyseBtn;
+        public string IsVisibleAnalyseBtn
+        {
+            get => _IsVisibleAnalyseBtn;
+            set
+            {
+                _IsVisibleAnalyseBtn = value;
+                OnPropertyChanged("IsVisibleAnalyseBtn");
+            }
+        }
+
+        private bool _IsProcess;
+        public bool IsProcess
+        {
+            get => _IsProcess;
+            set
+            {
+                _IsProcess = value;
+                OnPropertyChanged("IsProcess");
             }
         }
 

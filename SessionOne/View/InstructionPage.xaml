@@ -20,13 +20,10 @@
     </Grid>
     <Window.Resources>
         <Style TargetType="{x:Type Label}">
-            <Setter Property="FontFamily" Value="Comic Sans MS"/>
-        </Style>
-        <Style TargetType="{x:Type TextBox}">
-            <Setter Property="FontFamily" Value="Comic Sans MS"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
         </Style>
         <Style TargetType="{x:Type TextBlock}">
-            <Setter Property="FontFamily" Value="Comic Sans MS"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
         </Style>
     </Window.Resources>
     <Window.Background>

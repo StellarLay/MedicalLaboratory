@@ -8,17 +8,20 @@
         xmlns:local="clr-namespace:SessionOne.View"
         xmlns:UserControls="clr-namespace:SessionOne.UserControls" x:Name="LaborantIssledovatelForm" x:Class="SessionOne.View.LaborantIssledovatel"
         mc:Ignorable="d"
-        Title="LaborantIssledovatel" Height="700" Width="850" WindowStartupLocation="CenterScreen" MinWidth="850" MinHeight="600"
-        d:DataContext="{d:DesignInstance {x:Type vm:ApplicationViewModel}}">
+        Title="LaborantIssledovatel" Height="750" Width="900" WindowStartupLocation="CenterScreen" MinWidth="850" MinHeight="600"
+        d:DataContext="{d:DesignInstance {x:Type vm:ApplicationViewModel}}" Closing="LaborantIssledovatelForm_Closing">
     <Window.Resources>
         <Style TargetType="{x:Type Label}">
-            <Setter Property="FontFamily" Value="Comic Sans MS"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
         </Style>
         <Style TargetType="{x:Type TextBox}">
-            <Setter Property="FontFamily" Value="Comic Sans MS"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
         </Style>
         <Style TargetType="{x:Type RadioButton}">
-            <Setter Property="FontFamily" Value="Comic Sans MS"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+        </Style>
+        <Style TargetType="{x:Type ComboBox}">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
         </Style>
     </Window.Resources>
     <Window.Background>
@@ -26,7 +29,7 @@
     </Window.Background>
     <Grid>
         <Label x:Name="timerLabel" Margin="127,46,0,0" VerticalAlignment="Top" Content="{Binding TimerValue, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="198" FontSize="16" Foreground="#FF246D93"/>
-        <Button x:Name="backBtn" Content="На главный экран" HorizontalAlignment="Left" Margin="22,0,0,41.4" Width="130" Style="{DynamicResource ButtonStyle}" Foreground="#E5FFFFFF" Command="{Binding BackBtnCommand}" Cursor="Hand" Height="35" VerticalAlignment="Bottom"/>
+        <Button x:Name="backBtn" Content="На главный экран" HorizontalAlignment="Left" Margin="22,0,0,25.8" Width="130" Style="{DynamicResource ButtonStyle}" Foreground="#E5FFFFFF" Command="{Binding BackBtnCommand}" Cursor="Hand" Height="35" VerticalAlignment="Bottom"/>
         <Label x:Name="fioLabel" Content="Выберите пациента:" HorizontalAlignment="Left" Margin="22,146,0,0" VerticalAlignment="Top" Padding="0,5,5,5"/>
         <ComboBox Margin="22,177,427.2,0" VerticalAlignment="Top" ItemsSource="{Binding DataBase.Pacients, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="FIO" SelectedValue="{Binding ValuePatientAnalyzer, Mode=TwoWay}" SelectedValuePath="FIO" FontSize="14" Height="30" Style="{DynamicResource ComboBoxStyle}" BorderBrush="#7F277AA5">
             <i:Interaction.Triggers>
@@ -35,7 +38,7 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </ComboBox>
-        <GroupBox x:Name="AnalyzersGroup" Header="Доступные анализаторы" Height="127" Margin="0,428,36.2,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="338" BorderBrush="#7F277AA5">
+        <GroupBox x:Name="AnalyzersGroup" Header="Доступные анализаторы" Margin="0,428,36.2,115.4" HorizontalAlignment="Right" Width="338" BorderBrush="#4C277AA5">
             <ScrollViewer>
                 <ScrollViewer.Style>
                     <Style>
@@ -62,7 +65,7 @@
                 </ItemsControl>
             </ScrollViewer>
         </GroupBox>
-        <GroupBox Header="Доступные исследования" HorizontalAlignment="Right" Height="227" Margin="0,177,36.2,0" VerticalAlignment="Top" Width="338" BorderBrush="#7F277AA5">
+        <GroupBox Header="Доступные исследования" HorizontalAlignment="Right" Height="227" Margin="0,177,36.2,0" VerticalAlignment="Top" Width="338" BorderBrush="#4C277AA5">
             <ScrollViewer Margin="0,10,0,0">
                 <ScrollViewer.Style>
                     <Style>
@@ -89,8 +92,8 @@
                 </ItemsControl>
             </ScrollViewer>
         </GroupBox>
-        <Button x:Name="SendAnalysBtn" Content="Отправить на исследование" Margin="593,0,31.2,41.4" FontSize="14" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Cursor="Hand" Command="{Binding SendAnalyseCommand}" Height="40" VerticalAlignment="Bottom"/>
-        <GroupBox x:Name="ServicesSuccessGroup" Header="Статус услуг" Height="167" Margin="22,237,389.2,0" VerticalAlignment="Top" BorderBrush="#7F277AA5">
+        <Button x:Name="SendAnalysBtn" Content="Отправить на исследование" Margin="593,0,31.2,25.8" FontSize="14" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Cursor="Hand" Command="{Binding SendAnalyseCommand}" Height="40" VerticalAlignment="Bottom" IsEnabled="{Binding IsEnableAnalyseBtn, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding IsVisibleAnalyseBtn}"/>
+        <GroupBox x:Name="ServicesSuccessGroup" Header="Статус услуг" Height="167" Margin="22,237,389.2,0" VerticalAlignment="Top" BorderBrush="#4C277AA5">
             <Grid Margin="0,10,0,0">
                 <Grid.Style>
                     <Style>
@@ -151,7 +154,7 @@
                 <ImageBrush ImageSource="img/logo.png"/>
             </Image.OpacityMask>
         </Image>
-        <GroupBox x:Name="SuccessServicesGroup" Header="Завершенные исследования" Height="127" Margin="22,428,389.2,0" VerticalAlignment="Top" BorderBrush="#7F277AA5">
+        <GroupBox x:Name="SuccessServicesGroup" Header="Завершенные исследования" Margin="22,428,389.2,115.4" BorderBrush="#4C277AA5">
             <StackPanel Margin="0,0,-2,-0.2">
                 <Grid Height="34" Margin="0,5,0,0" Width="400">
                     <Grid.ColumnDefinitions>
@@ -192,5 +195,18 @@
         <Button x:Name="manualBtn" Content="Руководство по работе" Height="40" Margin="0,121,41.2,0" VerticalAlignment="Top" Background="#FF277AA5" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" HorizontalAlignment="Right" Width="180" Cursor="Hand" Command="{Binding OpenInstructionCommand}"/>
         <Label x:Name="timers_ms_label" Margin="127,10,0,0" VerticalAlignment="Top" Content="{Binding TimerValue2, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="276" FontSize="16" Foreground="White"/>
         <Label x:Name="warningSessionLabel" Margin="127,87,0,0" VerticalAlignment="Top" Content="{Binding WarningMessage, UpdateSourceTrigger=PropertyChanged}" Height="25" VerticalContentAlignment="Center" HorizontalAlignment="Left" Foreground="#FFDD6B6B"/>
+        <Label x:Name="AnalyseMessage" Content="{Binding AnalyseMessage, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,30,70.8" VerticalAlignment="Bottom" Foreground="#FF186F90" HorizontalAlignment="Right" Width="219"/>
+        <ProgressBar x:Name="pbarLogin" Margin="594,0,31.2,32.8" Foreground="#FF258AA3" Value="{Binding ProgBarLoginValue}" Template="{DynamicResource ProgressBarControlTemplate}" BorderBrush="{x:Null}" IsIndeterminate="{Binding IsIndeterminate, UpdateSourceTrigger=PropertyChanged}" Height="25" VerticalAlignment="Bottom">
+            <ProgressBar.Style>
+                <Style>
+                    <Setter Property="ProgressBar.Visibility" Value="Hidden"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsProcess}" Value="True">
+                            <Setter Property="ProgressBar.Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ProgressBar.Style>
+        </ProgressBar>
     </Grid>
 </Window>

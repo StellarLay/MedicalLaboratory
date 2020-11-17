@@ -42,5 +42,25 @@ namespace SessionOne.View
                 var responseGet = await client.GetAsync("http://localhost:5000/api/analyzer/{name}");
             }
         }
+
+        private void LaborantIssledovatelForm_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (App.statusSession == false)
+            {
+                if (MessageBox.Show(
+                    "Вы действительно хотите выйти?",
+                    "Информация",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question) == MessageBoxResult.Yes)
+                {
+                    e.Cancel = false;
+                    Application.Current.Shutdown();
+                }
+                else
+                {
+                    e.Cancel = true;
+                }
+            }
+        }
     }
 }

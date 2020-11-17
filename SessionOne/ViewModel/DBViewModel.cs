@@ -20,6 +20,7 @@ namespace SessionOne.ViewModel
     class DBViewModel : VM
     {
         public DispatcherTimer timeSession = new DispatcherTimer();
+        public DispatcherTimer timeApi = new DispatcherTimer();
 
         public MedicalLaboratoryEntities DataBaseModel;
         public DBViewModel()
@@ -30,6 +31,8 @@ namespace SessionOne.ViewModel
 
             timeSession.Tick += new EventHandler(session_time);
             timeSession.Interval = new TimeSpan(0, 0, 0, 0, 1);
+            timeApi.Tick += new EventHandler(timer_tick);
+            timeApi.Interval = new TimeSpan(0, 0, 0, 0, 1);
         }
 
         // Таймер времени сеанса
@@ -136,7 +139,7 @@ namespace SessionOne.ViewModel
             var getPatientId = DataBaseModel.Pacients.FirstOrDefault(w => w.FIO == patientFio);
             var servicePatientOrder = from o in DataBaseModel.Orders
                                       join s in DataBaseModel.Services on o.Services equals s.Code
-                                      where o.PacientId == getPatientId.Id
+                                      where o.PacientId == getPatientId.Id && o.StatusService == "Не выполнена"
                                       select new ServiceFilterPatient{ Code = s.Code, Service = s.Service};
 
             ServicesPatientFilter.Clear();
@@ -174,7 +177,7 @@ namespace SessionOne.ViewModel
             }
         }
 
-        // Отображаем услуги в работе в зависимости от выбранного анализатора
+        // Отображаем Завершенные услуги в зависимости от выбранного анализатора
         public void ServicesProcess(string analysatorValue, string fioPatient)
         {
             var result = from order in DataBaseModel.Orders
@@ -221,58 +224,62 @@ namespace SessionOne.ViewModel
         public bool statusLoading;
         public bool LoginUser(string login, string password)
         {
-            var user = DataBaseModel.Users.FirstOrDefault(w => w.login == login && w.password == password);
-            string typename = "";
-
-            if (user != null)
+            try
             {
-                var types = DataBaseModel.Types.FirstOrDefault(w => w.Id == user.type);
-                typename = types.Name;
-                App.username = user.name;
-                App.userimage = user.MainImage;
-                App.roleName = types.Name;
+                var cur = App.Current.Windows.OfType<Window>().FirstOrDefault(o => o.IsActive);
+                var user = DataBaseModel.Users.FirstOrDefault(w => w.login == login && w.password == password);
+                string typename = "";
 
-                // Когда прогрес бар загрузился
-                if(statusLoading)
+                if (user != null)
                 {
-                    switch (types.Name)
+                    var types = DataBaseModel.Types.FirstOrDefault(w => w.Id == user.type);
+                    typename = types.Name;
+                    App.username = user.name;
+                    App.userimage = user.MainImage;
+                    App.roleName = types.Name;
+                    App.statusSession = false;
+                    errorMessageLogin = "";
+
+                    // Когда прогрес бар загрузился
+                    if (statusLoading)
                     {
-                        case "Администратор":
-                            AdminPage form = new AdminPage();
-                            form.Show();
-                            errorMessageLogin = "";
-                            break;
-                        case "Лаборант":
-                            LaborantPage formLaborant = new LaborantPage();
-                            var cur = App.Current.Windows.OfType<Window>().FirstOrDefault(o => o.IsActive);
-                            cur.Hide();
-                            formLaborant.Show();
-                            errorMessageLogin = "";
-                            break;
-                        case "Лаборант исследователь":
-                            var curLogin = App.Current.Windows.OfType<Window>().FirstOrDefault(o => o.IsActive);
-                            curLogin.Hide();
-                            LaborantIssledovatel formLaborantIssledovatel = new LaborantIssledovatel();
-                            formLaborantIssledovatel.Show();
-                            errorMessageLogin = "";
-                            break;
-                        case "Бухгалтер":
-                            BuhgalterPage formBuhgalter = new BuhgalterPage();
-                            formBuhgalter.Show();
-                            errorMessageLogin = "";
-                            break;
+                        switch (types.Name)
+                        {
+                            case "Администратор":
+                                AdminPage form = new AdminPage();
+                                form.Show();
+                                break;
+                            case "Лаборант":
+                                LaborantPage formLaborant = new LaborantPage();
+                                formLaborant.Show();
+                                cur.Hide();
+                                break;
+                            case "Лаборант исследователь":
+                                LaborantIssledovatel formLaborantIssledovatel = new LaborantIssledovatel();
+                                formLaborantIssledovatel.Show();
+                                cur.Hide();
+                                break;
+                            case "Бухгалтер":
+                                BuhgalterPage formBuhgalter = new BuhgalterPage();
+                                formBuhgalter.Show();
+                                break;
+                        }
                     }
                 }
+                else if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
+                {
+                    errorMessageLogin = "Введите логин и пароль!";
+                    return false;
+                }
+                else
+                {
+                    errorMessageLogin = "Такого пользователя не существует!";
+                    return false;
+                }
             }
-            else if(string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
+            catch(Exception ex)
             {
-                errorMessageLogin = "Введите логин и пароль!";
-                return false;
-            }
-            else
-            {
-                errorMessageLogin = "Такого пользователя не существует!";
-                return false;
+                MessageBox.Show(ex.Message);
             }
 
             return true;
@@ -296,18 +303,84 @@ namespace SessionOne.ViewModel
             ProcessedServices.Remove(removeItem);
         }
 
+        // Get запрос API
+        int patientId = 0;
+        int serviceId = 0;
+        string patientname = "";
+        string servicename = "";
+        string analyservalue = "";
+        string progressvalue = "";
+        private async void timer_tick(object sender, EventArgs e)
+        {
+            // GET Request
+            using (var client = new HttpClient())
+            {
+                var response = await client.GetAsync("http://localhost:5000/api/analyzer/" + analyservalue);
 
+                if (response.StatusCode.ToString() != "BadRequest")
+                {
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    dynamic data = JsonConvert.DeserializeObject(responseBody);
+                    progressvalue = data["progress"];
 
+                    if (string.IsNullOrEmpty(progressvalue))
+                    {
+                        var result = data["services"][0]["result"];
 
+                        var patient = DataBaseModel.Orders.FirstOrDefault(w => w.PacientId == patientId && w.Services == serviceId);
+                        patient.StatusService = "Завершено";
+                        patient.Result = result;
+                        DataBaseModel.SaveChanges();
 
+                        // Подгружаем завершенные услуги
+                        ProcessedServices.Clear();
+                        ServicesProcess(analyservalue, patientname);
 
+                        // Обновляем доступные исследования
+                        ServicesPatientFilter.Clear();
+                        LoadServicesAnalyser(patientname);
 
+                        analyseMessage = "Анализ выполнен!";
+                        timeApi.Stop();
+                    }
+                }
+            }
+        }
 
+        // После нажатия на кнопку "Отправить на исследование" попадаем в этот метод
+        public string analyseMessage;
+        public async Task<bool> AnalyseOrder(string fio, string analysatorValue, string serviceName)
+        {
+            var getPatient = DataBaseModel.Pacients.FirstOrDefault(w => w.FIO == fio);
+            var getService = DataBaseModel.Services.FirstOrDefault(w => w.Service == serviceName);
+            patientId = getPatient.Id;
+            analyservalue = analysatorValue;
+            serviceId = getService.Code;
+            patientname = fio;
+            servicename = serviceName;
 
+            string myData = @"{ ""patient"": ""{" + getPatient.Id + @"}"", ""services"": [{ ""serviceCode"": " + getService.Code + "}]}";
+            using (var client = new HttpClient())
+            {
+                // POST Request
+                var response = await client.PostAsync(
+                    "http://localhost:5000/api/analyzer/" + analysatorValue,
+                    new StringContent(myData, Encoding.UTF8, "application/json")); ;
 
+                if (response.StatusCode.ToString() == "BadRequest")
+                {
+                    analyseMessage = "Анализатор занят другим процессом!";
+                    return false;
+                }
+                else
+                {
+                    analyseMessage = "";
+                    timeApi.Start();
+                }
+            }
 
-
-
+            return true;
+        }
 
         // Добавление пациента
         public void AddPacient(Pacients pacient)
@@ -357,128 +430,6 @@ namespace SessionOne.ViewModel
                 DataBaseModel.Orders.Add(order);
                 DataBaseModel.SaveChanges();
                 MessageBox.Show("Заказ успешно оформлен :) Общая сумма заказа: " + getService.Price + "руб");
-            }
-        }
-
-        // Взаимодействие с API
-        int patientId = 0;
-        string analyservalue = "";
-        int serviceCode = 0;
-        public string pgvalue = "";
-        public bool IsComplete = false;
-
-        string errorMessage = "";
-        // С интервалом в секунду обращаемся к апи, чтобы узнать результат
-        private async void timer_tick(object sender, EventArgs e)
-        {
-            // GET Request
-            using (var client = new HttpClient())
-            {
-                var response = await client.GetAsync("http://localhost:5000/api/analyzer/" + analyservalue);
-
-                if(response.StatusCode.ToString() == "BadRequest")
-                {
-                    errorMessage = "400! " +  await response.Content.ReadAsStringAsync();
-                }
-                else
-                {
-                    var body = await response.Content.ReadAsStringAsync();
-                    dynamic data = JsonConvert.DeserializeObject(body);
-
-                    pgvalue = data["progress"];
-                    if(!string.IsNullOrEmpty(pgvalue))
-                    {
-                        IsComplete = false;
-                        pgvalue += "100";
-                    }
-                    else
-                    {
-                        double result = data["services"][0]["result"];
-                        result = data["services"][0]["result"];
-
-
-                        pgvalue = "0";
-                        IsComplete = true;
-
-                        if (MessageBox.Show(
-                            "Результаты анализа: " + result + ". Принимаете ли вы результат анализа?",
-                            "Информация",
-                            MessageBoxButton.YesNo,
-                            MessageBoxImage.Information) == MessageBoxResult.Yes)
-                        {
-                            var patient = DataBaseModel.Orders.FirstOrDefault(w => w.PacientId == patientId);
-                            patient.StatusService = "Выполнена";
-                            DataBaseModel.SaveChanges();
-
-                            MessageBox.Show("Статус анализа : Выполнена, пациент может узнать данные :)");
-                        }
-                    }
-
-                }
-            }
-        }
-
-        private async void ApiProcess()
-        {
-            string myData = @"{ ""patient"": ""{"+  patientId + @"}"", ""services"": [{ ""serviceCode"": "+ serviceCode + "}]}";
-            using (var client = new HttpClient())
-            {
-                // POST Request
-                var response = await client.PostAsync(
-                    "http://localhost:5000/api/analyzer/" + analyservalue,
-                    new StringContent(myData, Encoding.UTF8, "application/json")); ;
-
-                if(response.StatusCode.ToString() == "BadRequest")
-                {
-                    l = 1;
-                    MessageBox.Show("Ошибка 400: " + await response.Content.ReadAsStringAsync());
-                }
-                else
-                {
-                    l = 0;
-                    //timer.Start();
-                }
-            }
-        }
-        public int l = 0;
-        // Анализатор
-        public void AnalyseOrder(string fio, string analysatorValue, string serviceName)
-        {
-            if(!string.IsNullOrEmpty(fio) && !string.IsNullOrEmpty(analysatorValue) && !string.IsNullOrEmpty(serviceName))
-            {
-                var getPacient = DataBaseModel.Pacients.FirstOrDefault(w => w.FIO == fio);
-                var getService = DataBaseModel.Services.FirstOrDefault(w => w.Service == serviceName);
-                int sc = getService.Code;
-                var getServiceOrder = DataBaseModel.Orders.FirstOrDefault(w => w.Services == sc);
-
-                if(getServiceOrder == null)
-                {
-                    MessageBox.Show("Заказа на анализ : " + serviceName + " нет!");
-                }
-                else
-                {
-                    int k = Convert.ToInt32(getServiceOrder.Services);
-                    var AnalysatorService = DataBaseModel.Services.FirstOrDefault(w => w.Code == k);
-                    var getAnalysator = DataBaseModel.Analyzers.FirstOrDefault(w => w.Name == analysatorValue);
-                    if (AnalysatorService.Analysers != getAnalysator.Id)
-                    {
-                        MessageBox.Show("Для анализа : " + serviceName + " выберите другой анализатор!");
-                        l = 1;
-                    }
-                    else
-                    {
-                        l = 0;
-                        serviceCode = (int)getServiceOrder.Services;
-                        patientId = getPacient.Id;
-                        analyservalue = analysatorValue;
-                        ApiProcess();
-                    }
-                }
-            }
-            else
-            {
-                l = 1;
-                MessageBox.Show("Выберите пациента, анализатор и вид анализа!");
             }
         }
     }

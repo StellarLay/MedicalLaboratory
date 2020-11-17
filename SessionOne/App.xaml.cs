@@ -16,6 +16,7 @@ namespace SessionOne
         public static string username;
         public static string userimage;
         public static string roleName;
+        public static bool statusSession = false;
     }
 
 }

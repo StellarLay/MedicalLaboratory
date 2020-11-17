@@ -78,5 +78,6 @@
                 </Style>
             </ProgressBar.Style>
         </ProgressBar>
+        <CheckBox Content="Заполнить " HorizontalAlignment="Left" Margin="110,273,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked"/>
     </Grid>
 </Window>
