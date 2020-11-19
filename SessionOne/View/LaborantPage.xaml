@@ -3,18 +3,78 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:SessionOne.ViewModel"
         xmlns:local="clr-namespace:SessionOne.View"
         mc:Ignorable="d"
-        Title="LaborantPage" Height="450" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
+        Title="LaborantPage" Height="500" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize"
+        d:DataContext="{d:DesignInstance {x:Type vm:ApplicationViewModel}}" Closing="Window_Closing" MinWidth="800" MinHeight="500">
+    <Window.Background>
+        <ImageBrush ImageSource="img/bg.jpg"/>
+    </Window.Background>
     <Grid>
-        <Button x:Name="backBtn" Content="На главный экран" HorizontalAlignment="Left" Margin="22,20,0,0" VerticalAlignment="Top" Width="130" Height="35" Style="{DynamicResource ButtonStyle}" Foreground="#E5FFFFFF" Command="{Binding BackBtnCommand}"/>
-        <Label Content="Добро пожаловать Лаборант" HorizontalAlignment="Left" Margin="453,20,0,0" VerticalAlignment="Top" Width="224" HorizontalContentAlignment="Right"/>
-        <Image HorizontalAlignment="Left" Height="100" Margin="682,14,0,0" VerticalAlignment="Top" Width="100" Source="laborant_2.png">
-            <Image.OpacityMask>
-                <ImageBrush ImageSource="laborant_2.png"/>
-            </Image.OpacityMask>
+        <Button x:Name="backBtn" Content="На главный экран" HorizontalAlignment="Left" Margin="25,0,0,25" VerticalAlignment="Bottom" Width="130" Height="35" Style="{DynamicResource ButtonStyle}" Foreground="#E5FFFFFF" Command="{Binding BackBtnCommand}"/>
+        <Label Content="{Binding UserName, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Margin="0,46,130,0" VerticalAlignment="Top" Width="224" HorizontalContentAlignment="Right"/>
+        <Image Margin="0,26,36.6,0" Source="img/users/laborant_1.jpeg" Height="75" VerticalAlignment="Top" HorizontalAlignment="Right" Width="80">
+            <Image.Clip>
+                <RectangleGeometry RadiusX="10" RadiusY="10" Rect="0,0,80,75"/>
+            </Image.Clip>
         </Image>
-        <Button x:Name="AddOrderBtn" Content="Принятие биоматериала и формирование заказа" HorizontalAlignment="Center" Margin="0,174,0,0" VerticalAlignment="Top" Width="350" Height="40" FontSize="14" Style="{DynamicResource ButtonStyle}" Foreground="#E5FFFFFF" Cursor="Hand" Command="{Binding OpenOrderFormCommand}"/>
-        <Button x:Name="AddPacient" Content="Добавление пациента" HorizontalAlignment="Left" Margin="221,242,0,0" VerticalAlignment="Top" Width="350" Height="40" FontSize="14" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Cursor="Hand" Command="{Binding AddPacientBtnCommand}"/>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <Label x:Name="timerLabel" Margin="127,46,0,0" VerticalAlignment="Top" Content="{Binding TimerValue, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="198" FontSize="16" Foreground="#FF246D93"/>
+        <Label x:Name="warningSessionLabel" Margin="127,87,0,0" VerticalAlignment="Top" Content="{Binding WarningMessage, UpdateSourceTrigger=PropertyChanged}" Height="25" VerticalContentAlignment="Center" HorizontalAlignment="Left" Foreground="#FFDD6B6B"/>
+        <StackPanel HorizontalAlignment="Center" Height="200" Margin="0,100,0,0" VerticalAlignment="Center" Width="346">
+            <Button x:Name="AddOrderBtn" Content="Принятие биоматериала и формирование заказа" HorizontalAlignment="Center" Margin="0,0,-4.4,0" VerticalAlignment="Top" Width="350" Height="50" FontSize="14" Style="{DynamicResource ButtonStyle}" Foreground="#E5FFFFFF" Cursor="Hand" Command="{Binding OpenOrderFormCommand}"/>
+            <Button x:Name="AddPacient" Content="Добавление пациента" HorizontalAlignment="Left" Margin="0,20,-4.4,0" VerticalAlignment="Top" Width="350" Height="50" FontSize="14" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Cursor="Hand" Command="{Binding AddPacientBtnCommand}"/>
+        </StackPanel>
+        <Label x:Name="timers_ms_label" Margin="127,10,0,0" VerticalAlignment="Top" Content="{Binding TimerValue2, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="276" FontSize="16" Foreground="White"/>
     </Grid>
 </Window>

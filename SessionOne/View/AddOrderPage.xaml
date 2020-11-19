@@ -3,10 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:SessionOne.ViewModel"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:local="clr-namespace:SessionOne.View"
         mc:Ignorable="d"
-        Title="Создание заказа" Height="624" Width="481" WindowStartupLocation="CenterScreen" WindowStyle="None" MinWidth="481" MinHeight="624" ResizeMode="CanMinimize" BorderBrush="Black" BorderThickness="1" SnapsToDevicePixels="True">
+        Title="Создание заказа" Height="624" Width="481" WindowStartupLocation="CenterScreen" WindowStyle="None" MinWidth="481" MinHeight="624" ResizeMode="CanMinimize" BorderBrush="Black" BorderThickness="1" SnapsToDevicePixels="True"
+        d:DataContext="{d:DesignInstance {x:Type vm:ApplicationViewModel}}">
+    <Window.Background>
+        <ImageBrush ImageSource="img/bg.jpg"/>
+    </Window.Background>
     <Grid>
         <StackPanel HorizontalAlignment="Left" Height="57" Margin="14,15,-14,0" VerticalAlignment="Top" Orientation="Horizontal">
             <Image Width="50" Source="img/logo.png">
@@ -16,10 +21,10 @@
             </Image>
             <Label Content="Создание заказа" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="#E5000000"/>
         </StackPanel>
-        <Button x:Name="backOrderBtn" Content="Назад" HorizontalAlignment="Left" Margin="14,562,0,0" VerticalAlignment="Top" Width="105" Height="28" FontSize="14" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Cursor="Hand" Command="{Binding BackBtnCommand}"/>
-        <Label x:Name="idMaterialLabel" Content="Введите код биоматериала:" HorizontalAlignment="Left" Margin="14,89,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="idMaterialBox" HorizontalAlignment="Left" Height="23" Margin="181,94,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="58" Background="{x:Null}" BorderThickness="0,0,0,1" Text="{Binding MaterialValue, UpdateSourceTrigger=PropertyChanged}"/>
-        <GroupBox x:Name="groupOrderPacient" Header="Данные о пациенте" HorizontalAlignment="Left" Height="281" Margin="14,156,0,0" VerticalAlignment="Top" Width="366">
+        <Button x:Name="backOrderBtn" Content="Назад" HorizontalAlignment="Left" Margin="14,0,0,25" Width="140" FontSize="14" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Cursor="Hand" Command="{Binding BackBtnCommand}" Height="35" VerticalAlignment="Bottom"/>
+        <Label x:Name="idMaterialLabel" Content="Номер заказа:" HorizontalAlignment="Left" Margin="14,89,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="idMaterialBox" HorizontalAlignment="Left" Height="23" Margin="107,92,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="30" Background="{x:Null}" BorderThickness="0,0,0,1" Text="{Binding OrderValue, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsEnabled="False"/>
+        <GroupBox x:Name="groupOrderPacient" Header="Данные о пациенте" Height="375" Margin="14,156,10.2,0" VerticalAlignment="Top">
             <GroupBox.Style>
                 <Style>
                     <Setter Property="GroupBox.Visibility" Value="Visible"/>
@@ -30,9 +35,9 @@
                     </Style.Triggers>
                 </Style>
             </GroupBox.Style>
-            <StackPanel Height="229" Margin="10,26,69,0" VerticalAlignment="Top">
+            <StackPanel Margin="10,26,10,7.4">
                 <Label x:Name="PacientFioLabel" Content="ФИО пациента:" Padding="0,5,5,5"/>
-                <ComboBox x:Name="companyCombo" ItemsSource="{Binding DataBase.Pacients, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="FIO" SelectedValue="{Binding SelectionFioPacient, Mode=TwoWay}" SelectedValuePath="FIO" IsEditable="True">
+                <ComboBox x:Name="companyCombo" ItemsSource="{Binding DataBase.Pacients, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="FIO" SelectedValue="{Binding SelectionFioPacient, Mode=TwoWay}" SelectedValuePath="FIO" IsEditable="True" Style="{DynamicResource ComboBoxStyle}" Height="30" VerticalContentAlignment="Center">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
                             <i:InvokeCommandAction Command="{Binding SelectionFioPacientCommand}"/>
@@ -40,14 +45,23 @@
                     </i:Interaction.Triggers>
                 </ComboBox>
                 <Label x:Name="ServiceLabel" Content="Услуга:" Padding="0,5,5,5" Margin="0,20,0,0"/>
-                <ComboBox x:Name="ServiceCombo" ItemsSource="{Binding DataBase.Services}" DisplayMemberPath="Service" SelectedValue="{Binding SelectService, Mode=TwoWay}" SelectedValuePath="Service" IsEditable="True">
+                <ComboBox x:Name="ServiceCombo" ItemsSource="{Binding DataBase.Services}" DisplayMemberPath="Service" SelectedValue="{Binding SelectService, Mode=TwoWay}" SelectedValuePath="Service" IsEditable="True" Style="{DynamicResource ComboBoxStyle}" Height="30" VerticalContentAlignment="Center">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
                             <i:InvokeCommandAction Command="{Binding SelectionFioPacientCommand}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </ComboBox>
-                <Button Content="Оформить заказ" Width="140" Height="25" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Margin="0,70,0,0" Command="{Binding CreateOrderCommand}"/>
+                <Label x:Name="ServiceTimeDay" Content="Время выполнения (в днях)" Padding="0,5,5,5" Margin="0,20,0,0"/>
+                <TextBox x:Name="serviceTimeDayBox" Background="{x:Null}" BorderThickness="0,0,0,1" Text="{Binding TimeDayValue, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="NumberValidationTextBox">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="TextChanged">
+                            <i:InvokeCommandAction Command="{Binding SelectionFioPacientCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
+                <Label x:Name="warningSessionLabel" VerticalAlignment="Top" Content="{Binding WarningMessage, UpdateSourceTrigger=PropertyChanged}" Height="25" VerticalContentAlignment="Center" HorizontalAlignment="Center" Foreground="{ Binding ColorMessage, UpdateSourceTrigger = PropertyChanged}" Margin="0,30,0,0"/>
+                <Button Content="Оформить заказ" Width="200" Height="40" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Margin="0,10,0,0" Command="{Binding CreateOrderCommand}" Cursor="Hand" IsEnabled="{Binding IsNewOrder, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
         </GroupBox>
     </Grid>

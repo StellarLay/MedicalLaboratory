@@ -45,19 +45,21 @@ namespace SessionOne.ViewModel
             SelectedPatientCommand = new RelayCommand<PacientsViewModel>(SelectedPatient);
             OpenInstructionCommand = new RelayCommand<object>(_=> OpenInstructionPage());
             SuccessServiceCommand = new RelayCommand<ProcessedServices>(SuccessServiceBtn);
+            SelectionFioPacientCommand = new RelayCommand<object>(_ => SelectOrderFIO());
 
             // Подгрузим приветствие пользователя
             UserName = "Добро пожаловать, " + App.username + "!";
             UserImage = App.userimage;
 
-            MaterialValue = "";
             ValuePatientAnalyzer = "";
             ServiceValue = "";
             AnalysatorValue = "";
             WarningMessage = "";
+            OrderValue = App.lastIdNewOrder.ToString();
+            IsNewOrder = false;
 
             // Запуск таймера сеанса лаборантов
-            if(App.roleName == "Лаборант исследователь")
+            if (App.roleName == "Лаборант исследователь" || App.roleName == "Лаборант")
             {
                 timerSession.Start();
                 App.roleName = "";
@@ -74,6 +76,7 @@ namespace SessionOne.ViewModel
         public ICommand CheckAnalyserCommand { get; }
         public ICommand CheckServiceCommand { get; }
         public ICommand SelectedFIOCommand { get; }
+        public ICommand SelectionFioPacientCommand { get; }
         public ICommand SendAnalyseCommand { get; }
         public ICommand SelectedPatientCommand { get; }
         public ICommand OpenInstructionCommand { get; }
@@ -114,6 +117,7 @@ namespace SessionOne.ViewModel
                 IsIndeterminate = false;
                 IsVisibleAnalyseBtn = "Visible";
                 sAn = 0;
+                timerAnalyse.Stop();
             }
             else
             {
@@ -174,6 +178,9 @@ namespace SessionOne.ViewModel
         // Логика кнопки "Назад"
         private void BackBtn()
         {
+            App.statusSession = true;
+            DataBase.timeSession.Stop();
+            timerSession.Stop();
             var cur = App.Current.Windows.OfType<Window>().FirstOrDefault(o => o.IsActive);
 
             if(cur.Name == "AddPacientForm")
@@ -277,12 +284,12 @@ namespace SessionOne.ViewModel
         // Открыть форму заказов
         private void OpenOrderForm()
         {
+            var getLastIdOrder = DataBase.DataBaseModel.Orders.OrderByDescending(o => o.Id).FirstOrDefault();
+            int lastId = getLastIdOrder.Id + 1;
+            App.lastIdNewOrder = lastId;
             AddOrderPage page = new AddOrderPage();
             page.Show();
         }
-
-        // Создание заказа
-        private void CreateOrder() => DataBase.CreateOrder(SelectionFioPacient, SelectService);
 
         // Отправляем данные на анализ
         private async void SendAnalyse()
@@ -301,6 +308,39 @@ namespace SessionOne.ViewModel
                 timerAnalyse.Start();
                 IsVisibleAnalyseBtn = "Hidden";
                 AnalyseMessage = "";
+            }
+        }
+
+        // Выбрали пациента в создании заказа
+        private void SelectOrderFIO()
+        {
+            WarningMessage = "";
+            if(!string.IsNullOrEmpty(SelectionFioPacient) && !string.IsNullOrEmpty(SelectService)
+                && !string.IsNullOrEmpty(TimeDayValue))
+            {
+                IsNewOrder = true;
+            }
+            else
+            {
+                IsNewOrder = false;
+            }
+        }
+
+        // Создание заказа
+        private void CreateOrder()
+        {
+            bool result = DataBase.CreateOrder(SelectionFioPacient, SelectService, TimeDayValue);
+            ColorMessage = DataBase.colorText;
+
+            if (result)
+            {
+                int lastId = Convert.ToInt32(OrderValue) + 1;
+                OrderValue = lastId.ToString();
+                WarningMessage = DataBase.errorMessageLogin;
+            }
+            else
+            {
+                WarningMessage = "";
             }
         }
 
@@ -348,6 +388,18 @@ namespace SessionOne.ViewModel
             {
                 errormessage = value;
                 OnPropertyChanged("ErrorMessage");
+            }
+        }
+
+        // Цвет сообщения
+        private string _ColorMessage;
+        public string ColorMessage
+        {
+            get => _ColorMessage;
+            set
+            {
+                _ColorMessage = value;
+                OnPropertyChanged("ColorMessage");
             }
         }
 
@@ -503,17 +555,41 @@ namespace SessionOne.ViewModel
             }
         }
 
-        private string materialvalue;
-        public string MaterialValue
+        // Свойство номера заказа в окне добавления заказа
+        private string _OrderValue;
+        public string OrderValue
         {
-            get => materialvalue;
+            get => _OrderValue;
             set
             {
-                materialvalue = value;
-                OnPropertyChanged("MaterialValue");
+                _OrderValue = value;
+                OnPropertyChanged("OrderValue");
             }
         }
 
+        // Выбрали ли мы пациента и услуг в окне добавления заказа
+        private bool _IsNewOrder;
+        public bool IsNewOrder
+        {
+            get => _IsNewOrder;
+            set
+            {
+                _IsNewOrder = value;
+                OnPropertyChanged("IsNewOrder");
+            }
+        }
+
+        // Свойство времени выполнения заказа
+        private string _TimeDayValue;
+        public string TimeDayValue
+        {
+            get => _TimeDayValue;
+            set
+            {
+                _TimeDayValue = value;
+                OnPropertyChanged("TimeDayValue");
+            }
+        }
 
         // Свойства для работы с анализатором
         private string analysatorvalue;

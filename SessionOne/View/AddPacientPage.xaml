@@ -9,13 +9,13 @@
         Title="AddPacientPage" Height="800" Width="700" WindowStartupLocation="CenterScreen" MinWidth="700" MinHeight="800"
         d:DataContext="{d:DesignInstance {x:Type vm:ApplicationViewModel}}" WindowStyle="None">
     <Grid HorizontalAlignment="Left" Width="690">
-        <StackPanel HorizontalAlignment="Left" Height="57" Margin="14,15,-14,0" VerticalAlignment="Top" Orientation="Horizontal">
-            <Image Width="50" Source="logo.png">
+        <StackPanel HorizontalAlignment="Left" Height="57" Margin="14,15,-14,0" VerticalAlignment="Top" Orientation="Horizontal" Width="240">
+            <Image HorizontalAlignment="Left" Margin="0,0,0,-0.2" Source="img/logo.png">
                 <Image.OpacityMask>
-                    <ImageBrush ImageSource="logo.png"/>
+                    <ImageBrush ImageSource="img/logo.png"/>
                 </Image.OpacityMask>
             </Image>
-            <Label Content="Добавление пациента" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="#E5000000"/>
+            <Label Content="Добавление пациента" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="#E5000000" Margin="5,0,0,0"/>
         </StackPanel>
         <StackPanel HorizontalAlignment="Center" Height="540" Margin="0,95,0,0" VerticalAlignment="Top" Width="600">
             <Label x:Name="FIOLabel" Content="ФИО пациента" Margin="0,10,0,0"/>

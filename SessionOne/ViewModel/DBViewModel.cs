@@ -35,34 +35,6 @@ namespace SessionOne.ViewModel
             timeApi.Interval = new TimeSpan(0, 0, 0, 0, 1);
         }
 
-        // Таймер времени сеанса
-        public int ms;
-        public int s;
-        public int min;
-        public int h;
-        private void session_time(object sender, EventArgs e)
-        {
-            if(ms == 60)
-            {
-                s++;
-                ms = 0;
-            }
-            else if(s == 60)
-            {
-                min++;
-                s = 0;
-            }
-            else if(min == 60)
-            {
-                h++;
-                min = 0;
-            }
-            else
-            {
-                ms++;
-            }
-        }
-
         // Коллекции, в которые собираются данные из определенных таблиц БД, благодаря чему мы можем работать независимо от SQL Server
         public ObservableCollection<StrahovieCompaniiViewModel> Companies { get; private set; }
         public ObservableCollection<PacientsViewModel> Pacients { get; private set; }
@@ -92,6 +64,34 @@ namespace SessionOne.ViewModel
         {
             get => _ProcessedServices;
             set => SetField(ref _ProcessedServices, value);
+        }
+
+        // Таймер времени сеанса
+        public int ms = 0;
+        public int s = 0;
+        public int min = 0;
+        public int h = 0;
+        private void session_time(object sender, EventArgs e)
+        {
+            if (ms == 60)
+            {
+                s++;
+                ms = 0;
+            }
+            else if (s == 60)
+            {
+                min++;
+                s = 0;
+            }
+            else if (min == 60)
+            {
+                h++;
+                min = 0;
+            }
+            else
+            {
+                ms++;
+            }
         }
 
         // Метод для заполнения всех необходимых нам коллекций для дальнейшей работы с ними
@@ -329,7 +329,26 @@ namespace SessionOne.ViewModel
 
                         var patient = DataBaseModel.Orders.FirstOrDefault(w => w.PacientId == patientId && w.Services == serviceId);
                         patient.StatusService = "Завершено";
-                        patient.Result = result;
+
+                        string convertResult = result;
+                        int k = 0;
+                        for (int i = 0; i < convertResult.Length; i++)
+                        {
+                            if (char.IsDigit(convertResult[i]))
+                            {
+                                k = 1;
+                            }
+                        }
+                        if (k == 1)
+                        {
+                            float res = float.Parse(convertResult.Replace('.', ','));
+                            patient.Result = Math.Round(res, 2).ToString();
+                        }
+                        else
+                        {
+                            patient.Result = result;
+                        }
+
                         DataBaseModel.SaveChanges();
 
                         // Подгружаем завершенные услуги
@@ -403,7 +422,8 @@ namespace SessionOne.ViewModel
         }
 
         // Оформление заказа
-        public void CreateOrder(string fio, string service)
+        public string colorText;
+        public bool CreateOrder(string fio, string service, string timeday)
         {
             var item = DataBaseModel.Pacients.FirstOrDefault(w => w.FIO == fio);
             if(item == null)
@@ -411,6 +431,7 @@ namespace SessionOne.ViewModel
                 MessageBox.Show("Пациент не найден! При нажатии на ОК откроется окно добавление пациента");
                 AddPacientPage page = new AddPacientPage();
                 page.Show();
+                return false;
             }
             else
             {
@@ -422,14 +443,27 @@ namespace SessionOne.ViewModel
                     PacientId = pacient.Id,
                     Services = Convert.ToInt32(serviceCode),
                     DateCreate = DateTime.Now,
-                    StatusOrder = "Starting",
-                    StatusService = "Processed",
-                    TimeDay = 6
+                    StatusOrder = "Ожидание результата",
+                    StatusService = "Не выполнена",
+                    TimeDay = Convert.ToInt32(timeday),
+                    Price = getService.Price
                 };
 
-                DataBaseModel.Orders.Add(order);
-                DataBaseModel.SaveChanges();
-                MessageBox.Show("Заказ успешно оформлен :) Общая сумма заказа: " + getService.Price + "руб");
+                var getOrder = DataBaseModel.Orders.FirstOrDefault(w => w.PacientId == pacient.Id && w.Services == getService.Code);
+                if(getOrder == null)
+                {
+                    colorText = "#FF1EBC59";
+                    DataBaseModel.Orders.Add(order);
+                    DataBaseModel.SaveChanges();
+                    errorMessageLogin = "Заказ успешно оформлен :) Общая сумма заказа: " + getService.Price + " руб.";
+                }
+                else
+                {
+                    errorMessageLogin = "Заказ на данное исследование уже существует!";
+                    colorText = "#FFD02727";
+                }
+
+                return true;
             }
         }
     }

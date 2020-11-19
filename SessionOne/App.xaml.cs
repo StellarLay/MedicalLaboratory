@@ -17,6 +17,7 @@ namespace SessionOne
         public static string userimage;
         public static string roleName;
         public static bool statusSession = false;
+        public static int lastIdNewOrder;
     }
 
 }

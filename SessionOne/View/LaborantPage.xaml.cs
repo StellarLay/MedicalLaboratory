@@ -25,5 +25,25 @@ namespace SessionOne.View
             InitializeComponent();
             DataContext = new ApplicationViewModel();
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (App.statusSession == false)
+            {
+                if (MessageBox.Show(
+                    "Вы действительно хотите выйти?",
+                    "Информация",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question) == MessageBoxResult.Yes)
+                {
+                    e.Cancel = false;
+                    Application.Current.Shutdown();
+                }
+                else
+                {
+                    e.Cancel = true;
+                }
+            }
+        }
     }
 }
