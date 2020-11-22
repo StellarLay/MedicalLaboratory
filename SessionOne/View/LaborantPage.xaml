@@ -12,63 +12,18 @@
         <ImageBrush ImageSource="img/bg.jpg"/>
     </Window.Background>
     <Grid>
-        <Button x:Name="backBtn" Content="На главный экран" HorizontalAlignment="Left" Margin="25,0,0,25" VerticalAlignment="Bottom" Width="130" Height="35" Style="{DynamicResource ButtonStyle}" Foreground="#E5FFFFFF" Command="{Binding BackBtnCommand}"/>
+        <Button x:Name="backBtn" Content="На главный экран" HorizontalAlignment="Left" Margin="25,0,0,25" VerticalAlignment="Bottom" Width="130" Height="35" Style="{DynamicResource ButtonStyle}" Foreground="#E5FFFFFF" Command="{Binding BackBtnCommand}" Cursor="Hand"/>
         <Label Content="{Binding UserName, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Margin="0,46,130,0" VerticalAlignment="Top" Width="224" HorizontalContentAlignment="Right"/>
         <Image Margin="0,26,36.6,0" Source="img/users/laborant_1.jpeg" Height="75" VerticalAlignment="Top" HorizontalAlignment="Right" Width="80">
             <Image.Clip>
                 <RectangleGeometry RadiusX="10" RadiusY="10" Rect="0,0,80,75"/>
             </Image.Clip>
         </Image>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+        <Image HorizontalAlignment="Left" Height="82" Margin="22,21,0,0" VerticalAlignment="Top" Width="100" Source="img/logo.png">
+            <Image.OpacityMask>
+                <ImageBrush ImageSource="img/logo.png"/>
+            </Image.OpacityMask>
+        </Image>
         <Label x:Name="timerLabel" Margin="127,46,0,0" VerticalAlignment="Top" Content="{Binding TimerValue, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="198" FontSize="16" Foreground="#FF246D93"/>
         <Label x:Name="warningSessionLabel" Margin="127,87,0,0" VerticalAlignment="Top" Content="{Binding WarningMessage, UpdateSourceTrigger=PropertyChanged}" Height="25" VerticalContentAlignment="Center" HorizontalAlignment="Left" Foreground="#FFDD6B6B"/>
         <StackPanel HorizontalAlignment="Center" Height="200" Margin="0,100,0,0" VerticalAlignment="Center" Width="346">

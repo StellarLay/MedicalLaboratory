@@ -50,6 +50,7 @@ namespace SessionOne.ViewModel
             // Подгрузим приветствие пользователя
             UserName = "Добро пожаловать, " + App.username + "!";
             UserImage = App.userimage;
+            DateBirthday = App.dateBirthday;
 
             ValuePatientAnalyzer = "";
             ServiceValue = "";
@@ -129,7 +130,7 @@ namespace SessionOne.ViewModel
         private void timer_session(object sender, EventArgs e)
         {
             DataBase.timeSession.Start();
-            if (DataBase.min == 2)
+            if (DataBase.min == 10)
             {
                 App.statusSession = true;
                 var cur = App.Current.Windows.OfType<Window>().FirstOrDefault(o => o.IsActive);
@@ -139,9 +140,9 @@ namespace SessionOne.ViewModel
                 WarningMessage = "";
                 timerSession.Stop();
             }
-            else if (DataBase.min == 1)
+            else if (DataBase.min == 5)
             {
-                WarningMessage = "До окончания сеанса осталась 1 минута";
+                WarningMessage = "До окончания сеанса осталась 5 минут";
             }
             TimerValue = "Время сеанса: " + DataBase.h + "ч : " + DataBase.min + "м";
             TimerValue2 = DataBase.ms.ToString() + DataBase.s.ToString();
@@ -267,18 +268,40 @@ namespace SessionOne.ViewModel
         // Создаем новый объект класса Pacients и добавляем его
         private void AddPacient()
         {
-            Pacients pacient = new Pacients
+            var getPolisId = DataBase.DataBaseModel.PolisTypes.FirstOrDefault(w => w.Name == NamePolis);
+            var getCompanyId = DataBase.DataBaseModel.StrahovieCompanii.FirstOrDefault(w => w.Name == NameCompany);
+            if(getPolisId != null && getCompanyId != null)
             {
-                FIO = FIO,
-                DateBirthday = DateBirthday,
-                PassportSerial = Convert.ToInt32(Serial),
-                PassportNumber = Convert.ToInt32(Number),
-                Phone = Phone,
-                Email = Email,
-                PolisNumber = PolisNumber,
-                TypePolis = PolisType
-            };
-            DataBase.AddPacient(pacient);
+                Pacients pacient = new Pacients
+                {
+                    FIO = FIO,
+                    DateBirthday = DateBirthday,
+                    PassportSerial = Convert.ToInt32(Serial),
+                    PassportNumber = Convert.ToInt32(Number),
+                    Phone = Phone,
+                    Email = Email,
+                    PolisNumber = PolisNumber,
+                    TypePolis = getPolisId.Id,
+                    StrahovayaCompania = getCompanyId.Id
+                };
+
+                bool result = DataBase.AddPacient(pacient);
+                ColorMessage = DataBase.colorText;
+
+                if (result)
+                {
+                    WarningMessage = DataBase.errorMessageLogin;
+                }
+                else
+                {
+                    WarningMessage = DataBase.errorMessageLogin;
+                }
+            }
+            else
+            {
+                ColorMessage = "#FFD02727";
+                WarningMessage = "Заполните все поля!";
+            }
         }
         
         // Открыть форму заказов
@@ -340,7 +363,7 @@ namespace SessionOne.ViewModel
             }
             else
             {
-                WarningMessage = "";
+                WarningMessage = DataBase.errorMessageLogin;
             }
         }
 
@@ -521,6 +544,7 @@ namespace SessionOne.ViewModel
             }
         }
 
+        // Свойство комбобокса имени страховой компании
         private string namecompany;
         public string NameCompany
         {
@@ -529,6 +553,18 @@ namespace SessionOne.ViewModel
             {
                 namecompany = value;
                 OnPropertyChanged("NameCompany");
+            }
+        }
+
+        // Свойство комбобокса типа полиса
+        private string _NamePolis;
+        public string NamePolis
+        {
+            get => _NamePolis;
+            set
+            {
+                _NamePolis = value;
+                OnPropertyChanged("NamePolis");
             }
         }
 

@@ -36,5 +36,6 @@ namespace SessionOne
         public virtual DbSet<SuccessService> SuccessService { get; set; }
         public virtual DbSet<Types> Types { get; set; }
         public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<PolisTypes> PolisTypes { get; set; }
     }
 }
