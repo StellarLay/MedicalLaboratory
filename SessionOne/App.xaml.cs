@@ -18,7 +18,6 @@ namespace SessionOne
         public static string roleName;
         public static bool statusSession = false;
         public static int lastIdNewOrder;
-        public static DateTime dateBirthday = DateTime.Today;
     }
 
 }

@@ -25,8 +25,6 @@
         <AssociationConnector Association="MedicalLaboratoryModel.FK_Users_Types" ManuallyRouted="false" />
         <AssociationConnector Association="MedicalLaboratoryModel.FK_Orders_Services" />
         <AssociationConnector Association="MedicalLaboratoryModel.FK_Services_Analyzers" />
-        <EntityTypeShape EntityType="MedicalLaboratoryModel.PolisTypes" Width="1.5" PointX="0.75" PointY="0.875" />
-        <AssociationConnector Association="MedicalLaboratoryModel.FK_Pacients_PolisTypes" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -17,27 +17,26 @@
             </Image>
             <Label Content="Добавление пациента" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="#E5000000" Margin="5,0,0,0"/>
         </StackPanel>
-        <StackPanel HorizontalAlignment="Center" Height="549" Margin="45,95,45,0" VerticalAlignment="Top" Width="600">
+        <StackPanel HorizontalAlignment="Center" Height="540" Margin="0,95,0,0" VerticalAlignment="Top" Width="600">
             <Label x:Name="FIOLabel" Content="ФИО пациента" Margin="0,10,0,0"/>
-            <TextBox x:Name="FIOBox" Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding FIO}" BorderBrush="#4C277AA5"/>
+            <TextBox x:Name="FIOBox" Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding FIO}"/>
             <Label x:Name="dateLabel" Content="Дата рождения" Margin="0,10,0,0"/>
-            <DatePicker x:Name="datePicker" BorderBrush="#4C277AA5" BorderThickness="0,0,0,1" DisplayDate="{Binding DateBirthday, UpdateSourceTrigger=PropertyChanged}"/>
+            <DatePicker x:Name="datePicker" BorderBrush="{x:Null}" DisplayDate="{Binding DateBirthday}"/>
             <Label x:Name="serialLabel" Content="Серия паспорта" Margin="0,10,0,0"/>
-            <TextBox Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding Serial}" BorderBrush="#4C277AA5" MaxLength="4" PreviewTextInput="NumberValidationTextBox"/>
+            <TextBox Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding Serial}"/>
             <Label x:Name="numberLabel" Content="Номер паспорта" Margin="0,10,0,0"/>
-            <TextBox Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding Number}" BorderBrush="#4C277AA5" MaxLength="6" PreviewTextInput="NumberValidationTextBox"/>
+            <TextBox Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding Number}"/>
             <Label x:Name="phoneLabel" Content="Телефон" Margin="0,10,0,0"/>
-            <TextBox Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding Phone}" BorderBrush="#4C277AA5" MaxLength="11" PreviewTextInput="NumberValidationTextBox" AutomationProperties.HelpText="В формате 89995306798"/>
+            <TextBox Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding Phone}"/>
             <Label x:Name="emailLabel" Content="Email" Margin="0,10,0,0"/>
-            <TextBox Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding Email}" BorderBrush="#4C277AA5"/>
+            <TextBox Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding Email}"/>
             <Label x:Name="numberPolisLabel" Content="Номер страхового полиса" Margin="0,10,0,0"/>
-            <TextBox x:Name="numberPolisBox" Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding PolisNumber}" BorderBrush="#4C277AA5" PreviewTextInput="NumberValidationTextBox" MaxLength="16"/>
+            <TextBox x:Name="numberPolisBox" Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding PolisNumber}"/>
             <Label x:Name="typePolisLabel" Content="Тип страхового полиса" Margin="0,10,0,0"/>
-            <ComboBox x:Name="typePolisCombo" ItemsSource="{Binding DataBase.Polises, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Name" SelectedValue="{Binding NamePolis, Mode=TwoWay}" SelectedValuePath="Name" Style="{DynamicResource ComboBoxStyle}" Height="28" VerticalContentAlignment="Center"/>
+            <TextBox x:Name="typePolisBox" Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding PolisType}"/>
             <Label x:Name="nameCompanyLabel" Content="Название страховой компании" Margin="0,10,0,0"/>
-            <ComboBox x:Name="companyCombo" ItemsSource="{Binding DataBase.Companies, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Name" SelectedValue="{Binding NameCompany, Mode=TwoWay}" SelectedValuePath="Name" Style="{DynamicResource ComboBoxStyle}" Height="28" VerticalContentAlignment="Center"/>
+            <ComboBox x:Name="companyCombo" ItemsSource="{Binding DataBase.Companies}" DisplayMemberPath="Name" SelectedValue="{Binding NameCompany}" SelectedValuePath="Content"/>
         </StackPanel>
-        <Label x:Name="warningSessionLabel" Content="{Binding WarningMessage, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Foreground="{ Binding ColorMessage, UpdateSourceTrigger = PropertyChanged}" Margin="0,0,0,110" Height="25" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
         <Button x:Name="addPacientValueBtn" Content="Добавить" HorizontalAlignment="Left" Margin="445,693,0,0" VerticalAlignment="Top" Width="200" Height="40" FontSize="14" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Cursor="Hand" Command="{Binding AddPacientDataCommand}"/>
         <Button x:Name="backPacientBtn" Content="Назад" HorizontalAlignment="Left" Margin="45,693,0,0" VerticalAlignment="Top" Width="200" Height="40" FontSize="14" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Cursor="Hand" Command="{Binding BackBtnCommand}"/>
     </Grid>

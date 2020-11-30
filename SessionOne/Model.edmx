@@ -69,15 +69,8 @@
           <Property Name="Phone" Type="nvarchar" MaxLength="50" />
           <Property Name="Email" Type="varchar" MaxLength="50" />
           <Property Name="PolisNumber" Type="nvarchar" MaxLength="50" />
-          <Property Name="TypePolis" Type="int" />
+          <Property Name="TypePolis" Type="varchar" MaxLength="50" />
           <Property Name="StrahovayaCompania" Type="int" />
-        </EntityType>
-        <EntityType Name="PolisTypes">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Name" Type="varchar" MaxLength="150" />
         </EntityType>
         <EntityType Name="Services">
           <Key>
@@ -166,18 +159,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Pacients_PolisTypes">
-          <End Role="PolisTypes" Type="Self.PolisTypes" Multiplicity="0..1" />
-          <End Role="Pacients" Type="Self.Pacients" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PolisTypes">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Pacients">
-              <PropertyRef Name="TypePolis" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Pacients_StrahovieCompanii">
           <End Role="StrahovieCompanii" Type="Self.StrahovieCompanii" Multiplicity="0..1" />
           <End Role="Pacients" Type="Self.Pacients" Multiplicity="*" />
@@ -233,7 +214,6 @@
           <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OrdersArchive" EntityType="Self.OrdersArchive" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Pacients" EntityType="Self.Pacients" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="PolisTypes" EntityType="Self.PolisTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Services" EntityType="Self.Services" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StrahovieCompanii" EntityType="Self.StrahovieCompanii" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SuccessService" EntityType="Self.SuccessService" Schema="dbo" store:Type="Tables" />
@@ -250,10 +230,6 @@
           <AssociationSet Name="FK_Orders_Services" Association="Self.FK_Orders_Services">
             <End Role="Services" EntitySet="Services" />
             <End Role="Orders" EntitySet="Orders" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Pacients_PolisTypes" Association="Self.FK_Pacients_PolisTypes">
-            <End Role="PolisTypes" EntitySet="PolisTypes" />
-            <End Role="Pacients" EntitySet="Pacients" />
           </AssociationSet>
           <AssociationSet Name="FK_Pacients_StrahovieCompanii" Association="Self.FK_Pacients_StrahovieCompanii">
             <End Role="StrahovieCompanii" EntitySet="StrahovieCompanii" />
@@ -345,11 +321,10 @@
           <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="PolisNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="TypePolis" Type="Int32" />
+          <Property Name="TypePolis" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="StrahovayaCompania" Type="Int32" />
           <NavigationProperty Name="Orders" Relationship="Self.FK_Orders_Pacients" FromRole="Pacients" ToRole="Orders" />
           <NavigationProperty Name="StrahovieCompanii" Relationship="Self.FK_Pacients_StrahovieCompanii" FromRole="Pacients" ToRole="StrahovieCompanii" />
-          <NavigationProperty Name="PolisTypes" Relationship="MedicalLaboratoryModel.FK_Pacients_PolisTypes" FromRole="Pacients" ToRole="PolisTypes" />
         </EntityType>
         <EntityType Name="Services">
           <Key>
@@ -545,11 +520,6 @@
             <End Role="Analyzers" EntitySet="Analyzers" />
             <End Role="Services" EntitySet="Services" />
           </AssociationSet>
-          <EntitySet Name="PolisTypes" EntityType="MedicalLaboratoryModel.PolisTypes" />
-          <AssociationSet Name="FK_Pacients_PolisTypes" Association="MedicalLaboratoryModel.FK_Pacients_PolisTypes">
-            <End Role="PolisTypes" EntitySet="PolisTypes" />
-            <End Role="Pacients" EntitySet="Pacients" />
-          </AssociationSet>
         </EntityContainer>
         <Association Name="FK_Orders_Services">
           <End Type="MedicalLaboratoryModel.Services" Role="Services" Multiplicity="0..1" />
@@ -572,26 +542,6 @@
             </Principal>
             <Dependent Role="Services">
               <PropertyRef Name="Analysers" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="PolisTypes">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Pacients" Relationship="MedicalLaboratoryModel.FK_Pacients_PolisTypes" FromRole="PolisTypes" ToRole="Pacients" />
-        </EntityType>
-        <Association Name="FK_Pacients_PolisTypes">
-          <End Type="MedicalLaboratoryModel.PolisTypes" Role="PolisTypes" Multiplicity="0..1" />
-          <End Type="MedicalLaboratoryModel.Pacients" Role="Pacients" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PolisTypes">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Pacients">
-              <PropertyRef Name="TypePolis" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -727,14 +677,6 @@
                 <ScalarProperty Name="lastenter" ColumnName="lastenter" />
                 <ScalarProperty Name="services" ColumnName="services" />
                 <ScalarProperty Name="type" ColumnName="type" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PolisTypes">
-            <EntityTypeMapping TypeName="MedicalLaboratoryModel.PolisTypes">
-              <MappingFragment StoreEntitySet="PolisTypes">
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -8,7 +8,7 @@
         xmlns:local="clr-namespace:SessionOne.View"
         xmlns:UserControls="clr-namespace:SessionOne.UserControls" x:Name="LaborantIssledovatelForm" x:Class="SessionOne.View.LaborantIssledovatel"
         mc:Ignorable="d"
-        Title="LaborantIssledovatel" Height="750" Width="900" WindowStartupLocation="CenterScreen" MinWidth="900" MinHeight="750"
+        Title="LaborantIssledovatel" Height="750" Width="900" WindowStartupLocation="CenterScreen" MinWidth="850" MinHeight="600"
         d:DataContext="{d:DesignInstance {x:Type vm:ApplicationViewModel}}" Closing="LaborantIssledovatelForm_Closing">
     <Window.Resources>
         <Style TargetType="{x:Type Label}">
