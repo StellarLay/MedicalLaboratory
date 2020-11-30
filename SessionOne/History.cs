@@ -15,7 +15,7 @@ namespace SessionOne
     public partial class History
     {
         public int Id { get; set; }
-        public Nullable<System.TimeSpan> Time { get; set; }
+        public System.TimeSpan Time { get; set; }
         public Nullable<int> LoginId { get; set; }
         public string Status { get; set; }
     

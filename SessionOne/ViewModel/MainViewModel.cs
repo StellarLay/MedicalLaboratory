@@ -58,13 +58,19 @@ namespace SessionOne.ViewModel
             WarningMessage = "";
             OrderValue = App.lastIdNewOrder.ToString();
             IsNewOrder = false;
+            ColorMessage = "#000000";
+            IsVisibleAnalyseBtn = "Visible";
 
             // Запуск таймера сеанса лаборантов
             if (App.roleName == "Лаборант исследователь" || App.roleName == "Лаборант")
             {
                 timerSession.Start();
-                App.roleName = "";
             }
+            else if(App.roleName == "Администратор")
+            {
+                DataBase.LoadHistory();
+            }
+            App.roleName = "";
         }
 
         // Commands

@@ -29,7 +29,7 @@
                 <Style>
                     <Setter Property="GroupBox.Visibility" Value="Visible"/>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding MaterialValue}" Value="">
+                        <DataTrigger Binding="{Binding OrderValue}" Value="">
                             <Setter Property="GroupBox.Visibility" Value="Hidden"/>
                         </DataTrigger>
                     </Style.Triggers>

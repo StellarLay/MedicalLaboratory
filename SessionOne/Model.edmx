@@ -25,9 +25,9 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Time" Type="time" Precision="7" />
+          <Property Name="Time" Type="time" Precision="7" Nullable="false" />
           <Property Name="LoginId" Type="int" />
-          <Property Name="Status" Type="varchar" MaxLength="50" />
+          <Property Name="Status" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Orders">
           <Key>
@@ -130,6 +130,18 @@
           <Property Name="type" Type="int" Nullable="false" />
           <Property Name="MainImage" Type="varchar" MaxLength="200" />
         </EntityType>
+        <Association Name="FK_History_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="History" Type="Self.History" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="History">
+              <PropertyRef Name="LoginId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Orders_Pacients">
           <End Role="Pacients" Type="Self.Pacients" Multiplicity="0..1" />
           <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
@@ -227,6 +239,10 @@
           <EntitySet Name="SuccessService" EntityType="Self.SuccessService" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Types" EntityType="Self.Types" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_History_Users" Association="Self.FK_History_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="History" EntitySet="History" />
+          </AssociationSet>
           <AssociationSet Name="FK_Orders_Pacients" Association="Self.FK_Orders_Pacients">
             <End Role="Pacients" EntitySet="Pacients" />
             <End Role="Orders" EntitySet="Orders" />
@@ -282,9 +298,9 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Time" Type="Time" Precision="7" />
+          <Property Name="Time" Type="Time" Nullable="false" Precision="7" />
           <Property Name="LoginId" Type="Int32" />
-          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="Users" Relationship="Self.FK_History_Users" FromRole="History" ToRole="Users" />
         </EntityType>
         <EntityType Name="Orders">

@@ -142,6 +142,7 @@
     </Compile>
     <Compile Include="ViewModel\AnalyserViewModel.cs" />
     <Compile Include="ViewModel\DBViewModel.cs" />
+    <Compile Include="ViewModel\HistoryViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\NotSuccessServices.cs" />
     <Compile Include="ViewModel\OrdersViewModel.cs" />
@@ -192,6 +193,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="View\img\users\buhgalter.png" />
+    <Resource Include="View\img\users\admin.png" />
     <Resource Include="View\img\logo.ico" />
     <Resource Include="View\img\logo.png" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -295,8 +298,6 @@
       <DependentUpon>Model.edmx</DependentUpon>
       <LastGenOutput>Model.cs</LastGenOutput>
     </Content>
-    <Resource Include="View\img\users\man.png" />
-    <Resource Include="View\img\users\player.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

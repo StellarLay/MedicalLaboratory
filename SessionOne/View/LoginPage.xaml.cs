@@ -43,5 +43,11 @@ namespace SessionOne.View
             loginBox.Text = "nmably1";
             passBox.Password = "ukM0e6";
         }
+
+        private void CheckBox_Checked_2(object sender, RoutedEventArgs e)
+        {
+            loginBox.Text = "chacking0";
+            passBox.Password = "4tzqHdkqzo4";
+        }
     }
 }

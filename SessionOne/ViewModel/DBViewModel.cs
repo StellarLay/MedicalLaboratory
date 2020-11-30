@@ -40,18 +40,17 @@ namespace SessionOne.ViewModel
         public ObservableCollection<TypePolisViewModel> Polises { get; private set; }
         public ObservableCollection<PacientsViewModel> Pacients { get; private set; }
         public ObservableCollection<ServiceViewModel> Services { get; private set; }
+        public ObservableCollection<OrdersViewModel> Orders { get; private set; }
+        public ObservableCollection<ServiceFilterPatient> ServicesPatientFilter { get; private set; }
+        public ObservableCollection<HistoryViewModel> Histories { get; private set; }
 
+        // доп коллекции
         private ObservableCollection<AnalyserViewModel> _Analysers;
         public ObservableCollection<AnalyserViewModel> Analysers
         {
             get => _Analysers;
             set => SetField(ref _Analysers, value);
         }
-
-        public ObservableCollection<OrdersViewModel> Orders { get; private set; }
-
-        // доп коллекции
-        public ObservableCollection<ServiceFilterPatient> ServicesPatientFilter { get; private set; }
 
         private ObservableCollection<NotSuccessServices> _NotSuccessServ;
         public ObservableCollection<NotSuccessServices> NotSuccessServ
@@ -156,6 +155,21 @@ namespace SessionOne.ViewModel
             }
         }
 
+        // Подгружаем историю входа
+        public void LoadHistory()
+        {
+            var result = from history in DataBaseModel.History
+                         join user in DataBaseModel.Users on history.LoginId equals user.id
+                         select new HistoryViewModel
+                         {
+                             Time = history.Time,
+                             LoginName = user.name,
+                             Status = history.Status
+                         };
+
+            Histories = new ObservableCollection<HistoryViewModel>(result);
+        }
+
         // Отображаем статус услуг в зависимости от выбранного анализатора
         public void NotSuccessService(string analysatorValue, string fioPatient)
         {
@@ -255,6 +269,7 @@ namespace SessionOne.ViewModel
                             case "Администратор":
                                 AdminPage form = new AdminPage();
                                 form.Show();
+                                cur.Hide();
                                 break;
                             case "Лаборант":
                                 LaborantPage formLaborant = new LaborantPage();

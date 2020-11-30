@@ -131,7 +131,7 @@
                 </ScrollViewer>
             </Grid>
         </GroupBox>
-        <ProgressBar x:Name="pgBar" HorizontalAlignment="Left" Height="22" Margin="249,517,0,0" VerticalAlignment="Top" Width="289" Foreground="#FF498C51" Value="{Binding ProgBarValue, UpdateSourceTrigger=PropertyChanged}">
+        <ProgressBar x:Name="pgBar" HorizontalAlignment="Left" Height="22" Margin="249,517,0,0" VerticalAlignment="Top" Width="289" Foreground="#FF498C51">
             <ProgressBar.Style>
                 <Style>
                     <Setter Property="UIElement.Visibility" Value="Visible"/>
@@ -196,7 +196,7 @@
         <Label x:Name="timers_ms_label" Margin="127,10,0,0" VerticalAlignment="Top" Content="{Binding TimerValue2, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="276" FontSize="16" Foreground="White"/>
         <Label x:Name="warningSessionLabel" Margin="127,87,0,0" VerticalAlignment="Top" Content="{Binding WarningMessage, UpdateSourceTrigger=PropertyChanged}" Height="25" VerticalContentAlignment="Center" HorizontalAlignment="Left" Foreground="#FFDD6B6B"/>
         <Label x:Name="AnalyseMessage" Content="{Binding AnalyseMessage, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,30,70.8" VerticalAlignment="Bottom" Foreground="#FF186F90" HorizontalAlignment="Right" Width="219"/>
-        <ProgressBar x:Name="pbarLogin" Margin="594,0,31.2,32.8" Foreground="#FF258AA3" Value="{Binding ProgBarLoginValue}" Template="{DynamicResource ProgressBarControlTemplate}" BorderBrush="{x:Null}" IsIndeterminate="{Binding IsIndeterminate, UpdateSourceTrigger=PropertyChanged}" Height="25" VerticalAlignment="Bottom">
+        <ProgressBar x:Name="pbarLogin" Margin="594,0,31.2,32.8" Foreground="#FF258AA3" Template="{DynamicResource ProgressBarControlTemplate}" BorderBrush="{x:Null}" IsIndeterminate="{Binding IsIndeterminate, UpdateSourceTrigger=PropertyChanged}" Height="25" VerticalAlignment="Bottom">
             <ProgressBar.Style>
                 <Style>
                     <Setter Property="ProgressBar.Visibility" Value="Hidden"/>

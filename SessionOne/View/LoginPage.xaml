@@ -36,37 +36,10 @@
             <PasswordBox x:Name="passBox" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Width="300" Height="23" BorderThickness="0,0,0,1" Padding="3,0,0,0" Background="{x:Null}"/>
         </StackPanel>
         <Button x:Name="LoginBtn" Content="Войти" Margin="310,370,310,0" VerticalAlignment="Top" Height="45" FontSize="14" Background="#FF277AA5" Foreground="#E5FFFFFF" Cursor="Hand" Style="{DynamicResource ButtonStyle}" Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=passBox}" IsDefault="True"/>
-        <StackPanel x:Name="CaptchaPanel" HorizontalAlignment="Center" Height="144" Margin="247,300,247,0" VerticalAlignment="Top" Width="300" RenderTransformOrigin="0.5,0.5">
-            <StackPanel.Style>
-                <Style>
-                    <Setter Property="UIElement.Visibility" Value="Hidden"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsCaptcha}" Value="True">
-                            <Setter Property="UIElement.Visibility" Value="Visible"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </StackPanel.Style>
-            <Label x:Name="captchaLabel" Content="Введите капчу:" HorizontalContentAlignment="Center"/>
-            <TextBlock x:Name="captchaValue" Text="{Binding CaptchaValue, UpdateSourceTrigger=PropertyChanged}" Width="183" Margin="0,0,0,10" TextDecorations="StrikeThrough" Padding="0,5,0,0" FontSize="14"/>
-            <TextBox x:Name="captchaInput" BorderThickness="0,0,0,1" Margin="70,0" Text="{Binding CaptchaInput, UpdateSourceTrigger=PropertyChanged}"/>
-        </StackPanel>
-        <Button x:Name="refreshCaptchaBtn" Content="Поменять" Margin="447,343,247,0" Cursor="Hand" Foreground="#E5FFFFFF" Command="{Binding RefreshCaptchaCommand}" Height="25" VerticalAlignment="Top" Background="#FF498C51" BorderBrush="{x:Null}">
-            <Button.Style>
-                <Style>
-                    <Setter Property="UIElement.Visibility" Value="Hidden"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsCaptcha}" Value="True">
-                            <Setter Property="UIElement.Visibility" Value="Visible"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>
         <UserControls:SystemButtons Height="42" Margin="650,10,11,0" VerticalAlignment="Top" Width="Auto"/>
         <Label x:Name="errorMessage" Content="{Binding ErrorMessage, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="250,321,0,0" VerticalAlignment="Top" Width="300" HorizontalContentAlignment="Center" Foreground="#FFD31F1F"/>
         <Border x:Name="dragmoveBorder" BorderThickness="10" HorizontalAlignment="Left" Height="44" VerticalAlignment="Top" Width="717" MouseLeftButtonDown="dragmoveBorder_MouseLeftButtonDown" Background="#00000000"/>
-        <ProgressBar x:Name="pbarLogin" Height="28" Margin="310,378,310,0" VerticalAlignment="Top" Foreground="#FF258AA3" Value="{Binding ProgBarLoginValue}" Template="{DynamicResource ProgressBarControlTemplate}" BorderBrush="{x:Null}" IsIndeterminate="{Binding IsIndeterminate, UpdateSourceTrigger=PropertyChanged}">
+        <ProgressBar x:Name="pbarLogin" Height="28" Margin="310,378,310,0" VerticalAlignment="Top" Foreground="#FF258AA3" Template="{DynamicResource ProgressBarControlTemplate}" BorderBrush="{x:Null}" IsIndeterminate="{Binding IsIndeterminate, UpdateSourceTrigger=PropertyChanged}">
             <ProgressBar.Style>
                 <Style>
                     <Setter Property="ProgressBar.Visibility" Value="Hidden"/>
@@ -80,5 +53,6 @@
         </ProgressBar>
         <CheckBox Content="Лаборант-исследователь" HorizontalAlignment="Left" Margin="49,273,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked"/>
         <CheckBox Content="Лаборант" HorizontalAlignment="Left" Margin="49,301,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked_1"/>
+        <CheckBox Content="Админ" HorizontalAlignment="Left" Margin="49,334,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked_2"/>
     </Grid>
 </Window>
