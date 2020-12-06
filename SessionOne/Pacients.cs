@@ -30,8 +30,9 @@ namespace SessionOne
         public string Phone { get; set; }
         public string Email { get; set; }
         public string PolisNumber { get; set; }
-        public string TypePolis { get; set; }
+        public Nullable<int> TypePolis { get; set; }
         public Nullable<int> StrahovayaCompania { get; set; }
+        public Nullable<System.DateTime> RegisterDate { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Orders> Orders { get; set; }

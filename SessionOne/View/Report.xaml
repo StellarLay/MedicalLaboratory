@@ -1,0 +1,19 @@
+﻿<Window x:Name="ReportForm" x:Class="SessionOne.View.Report"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:vm="clr-namespace:SessionOne.ViewModel"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SessionOne.View"
+        mc:Ignorable="d"
+        Title="Отчет" Height="200" Width="500" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize"
+        d:DataContext="{d:DesignInstance {x:Type vm:ApplicationViewModel}}">
+    <Window.Background>
+        <ImageBrush ImageSource="img/bg.jpg"/>
+    </Window.Background>
+    <Grid>
+        <Label x:Name="headLabel" Content="{Binding HeadReportText}" HorizontalAlignment="Center" Margin="0,23,0,0" VerticalAlignment="Top" Foreground="#E5000000"/>
+        <Label x:Name="textLabel" Content="{Binding MainReportText}" HorizontalAlignment="Center" Margin="0,68,0,0" VerticalAlignment="Top" Foreground="#FF448FB6"/>
+        <Button x:Name="BtnReport" Content="Понятно" Margin="177,0,176.6,20.4" Height="30" VerticalAlignment="Bottom" Background="#FF277AA5" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Command="{Binding BackBtnCommand}" Cursor="Hand"/>
+    </Grid>
+</Window>

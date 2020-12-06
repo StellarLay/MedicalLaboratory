@@ -55,11 +55,21 @@
         </GroupBox>
         <GroupBox Margin="0,240,35.6,30" Header="Отчеты" HorizontalAlignment="Right" Width="318">
             <StackPanel Margin="30,10,30.4,18">
-                <Button x:Name="StatsOneBtn" Content="Количество заказов" VerticalAlignment="Top" Height="50" Background="#FF277AA5" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Margin="0,70,0,0"  Width="240" Cursor="Hand"/>
-                <Button x:Name="StatsTwo" Content="Количество новых пациентов" VerticalAlignment="Top" Height="50" Background="#FF277AA5" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Margin="0,20,0,0"  Width="240" Cursor="Hand"/>
-                <Button x:Name="StatsThree" Content="Общая прибыль" VerticalAlignment="Top" Height="50" Background="#FF277AA5" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Margin="0,20,0,0" Width="240" Cursor="Hand"/>
+                <Button x:Name="StatsOneBtn" Content="Количество заказов" VerticalAlignment="Top" Height="50" Background="#FF277AA5" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Margin="0,70,0,0"  Width="240" Cursor="Hand" Command="{Binding ReportBtnCommand}" CommandParameter="{Binding ElementName=StatsOneBtn,Path=Name}"/>
+                <Button x:Name="StatsTwoBtn" Content="Количество новых пациентов" VerticalAlignment="Top" Height="50" Background="#FF277AA5" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Margin="0,20,0,0"  Width="240" Cursor="Hand" Command="{Binding ReportBtnCommand}" CommandParameter="{Binding ElementName=StatsTwoBtn,Path=Name}"/>
+                <Button x:Name="StatsThreeBtn" Content="Общая прибыль" VerticalAlignment="Top" Height="50" Background="#FF277AA5" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Margin="0,20,0,0" Width="240" Cursor="Hand" Command="{Binding ReportBtnCommand}" CommandParameter="{Binding ElementName=StatsThreeBtn,Path=Name}"/>
             </StackPanel>
         </GroupBox>
-        <GroupBox x:Name="FilterBox" Header="Фильтр" Height="100" Margin="22,120,35.6,0" VerticalAlignment="Top"/>
+        <GroupBox x:Name="FilterBox" Header="Фильтр" Height="100" Margin="22,120,35.6,0" VerticalAlignment="Top">
+            <Grid Margin="10,0">
+                <Label x:Name="dateLabel" Content="Выберите период:" HorizontalAlignment="Left" Margin="10,0,0,0" Foreground="#E5000000" VerticalContentAlignment="Center" FontSize="14"/>
+                <Label x:Name="fromLabel" Content="с" HorizontalAlignment="Left" Margin="180,24,0,24.6" FontSize="14"/>
+                <Label x:Name="To" Content="по" HorizontalAlignment="Left" Margin="389,24,0,24.6" FontSize="14"/>
+                <DatePicker x:Name="fromPicker" HorizontalAlignment="Left" Margin="211,26,0,25.6" Width="139" BorderThickness="0,0,0,1" Padding="2,2,2,3" BorderBrush="#33000000" FontSize="14" SelectedDate="{Binding FromDate, Mode=TwoWay, TargetNullValue=''}"/>
+                <DatePicker x:Name="toPicker" HorizontalAlignment="Left" Margin="422,26,0,25.6" Width="139" BorderThickness="0,0,0,1" Padding="2,2,2,3" BorderBrush="#33000000" FontSize="14" SelectedDate="{Binding ToDate, Mode=TwoWay, TargetNullValue=''}" Text="Выбор даты"/>
+                <Label x:Name="errorMessage" Content="{Binding ErrorMessage, UpdateSourceTrigger=PropertyChanged}" Margin="566,24,10,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" Foreground="#FFD31F1F"/>
+            </Grid>
+        </GroupBox>
+        <Button x:Name="backBtn" Content="На главный экран" HorizontalAlignment="Left" Margin="145,52,0,0" Width="160" Style="{DynamicResource ButtonStyle}" Foreground="#E5FFFFFF" Command="{Binding BackBtnCommand}" Cursor="Hand" Height="35" VerticalAlignment="Top"/>
     </Grid>
 </Window>

@@ -62,6 +62,7 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Login" Type="varchar" MaxLength="50" />
           <Property Name="Password" Type="varchar" MaxLength="50" />
+          <Property Name="RegisterDate" Type="date" />
           <Property Name="FIO" Type="varchar" MaxLength="50" />
           <Property Name="DateBirthday" Type="date" />
           <Property Name="PassportSerial" Type="int" />
@@ -69,7 +70,7 @@
           <Property Name="Phone" Type="nvarchar" MaxLength="50" />
           <Property Name="Email" Type="varchar" MaxLength="50" />
           <Property Name="PolisNumber" Type="nvarchar" MaxLength="50" />
-          <Property Name="TypePolis" Type="varchar" MaxLength="50" />
+          <Property Name="TypePolis" Type="int" />
           <Property Name="StrahovayaCompania" Type="int" />
         </EntityType>
         <EntityType Name="Services">
@@ -321,10 +322,11 @@
           <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="PolisNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="TypePolis" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="TypePolis" Type="Int32" />
           <Property Name="StrahovayaCompania" Type="Int32" />
           <NavigationProperty Name="Orders" Relationship="Self.FK_Orders_Pacients" FromRole="Pacients" ToRole="Orders" />
           <NavigationProperty Name="StrahovieCompanii" Relationship="Self.FK_Pacients_StrahovieCompanii" FromRole="Pacients" ToRole="StrahovieCompanii" />
+          <Property Name="RegisterDate" Type="DateTime" Precision="0" />
         </EntityType>
         <EntityType Name="Services">
           <Key>
@@ -609,6 +611,7 @@
           <EntitySetMapping Name="Pacients">
             <EntityTypeMapping TypeName="MedicalLaboratoryModel.Pacients">
               <MappingFragment StoreEntitySet="Pacients">
+                <ScalarProperty Name="RegisterDate" ColumnName="RegisterDate" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Login" ColumnName="Login" />
                 <ScalarProperty Name="Password" ColumnName="Password" />

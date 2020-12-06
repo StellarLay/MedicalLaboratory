@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -46,6 +47,7 @@ namespace SessionOne.ViewModel
             OpenInstructionCommand = new RelayCommand<object>(_=> OpenInstructionPage());
             SuccessServiceCommand = new RelayCommand<ProcessedServices>(SuccessServiceBtn);
             SelectionFioPacientCommand = new RelayCommand<object>(_ => SelectOrderFIO());
+            ReportBtnCommand = new RelayCommand<object>(ReportBtn);
 
             // Подгрузим приветствие пользователя
             UserName = "Добро пожаловать, " + App.username + "!";
@@ -59,6 +61,8 @@ namespace SessionOne.ViewModel
             IsNewOrder = false;
             ColorMessage = "#000000";
             IsVisibleAnalyseBtn = "Visible";
+            HeadReportText = App.HeadReport;
+            MainReportText = App.MainReport;
 
             // Запуск таймера сеанса лаборантов
             if (App.roleName == "Лаборант исследователь" || App.roleName == "Лаборант")
@@ -87,6 +91,7 @@ namespace SessionOne.ViewModel
         public ICommand SelectedPatientCommand { get; }
         public ICommand OpenInstructionCommand { get; }
         public ICommand SuccessServiceCommand { get; }
+        public ICommand ReportBtnCommand { get; }
 
 
         /// <summary>
@@ -189,11 +194,9 @@ namespace SessionOne.ViewModel
             timerSession.Stop();
             var cur = App.Current.Windows.OfType<Window>().FirstOrDefault(o => o.IsActive);
 
-            if(cur.Name == "AddPacientForm")
-            {
-                cur.Close();
-            }
-            else if (cur.Name == "OrderForm")
+            if(cur.Name == "AddPacientForm" ||
+                cur.Name == "OrderForm" ||
+                cur.Name == "ReportForm")
             {
                 cur.Close();
             }
@@ -282,7 +285,7 @@ namespace SessionOne.ViewModel
                 Phone = Phone,
                 Email = Email,
                 PolisNumber = PolisNumber,
-                TypePolis = PolisType
+                TypePolis = Convert.ToInt32(PolisType)
             };
             DataBase.AddPacient(pacient);
         }
@@ -347,6 +350,40 @@ namespace SessionOne.ViewModel
             else
             {
                 WarningMessage = "";
+            }
+        }
+
+        // Кнопки отчетов
+        private void ReportBtn(object nameBtn)
+        {
+            if(FromDate == null || ToDate == null)
+            {
+                ErrorMessage = "Заполните фильтр!";
+            }
+            else
+            {
+                if (nameBtn.ToString() == "StatsOneBtn")
+                {
+                    var item = DataBase.DataBaseModel.Orders.Where(w => w.DateCreate >= FromDate && w.DateCreate <= ToDate);
+                    App.HeadReport = "Отчет по количеству заказов с " + FromDate.Value.Date.Date.ToShortDateString() + " по " + ToDate.Value.Date.Date.ToShortDateString();
+                    App.MainReport = "Общее количество заказов за данный период: " + item.Count();
+                }
+                else if (nameBtn.ToString() == "StatsTwoBtn")
+                {
+                    var item = DataBase.DataBaseModel.Pacients.Where(w => w.RegisterDate >= FromDate && w.RegisterDate <= ToDate);
+                    App.HeadReport = "Отчет по зарегистрированным пациентам с " + FromDate.Value.Date.Date.ToShortDateString() + " по " + ToDate.Value.Date.Date.ToShortDateString();
+                    App.MainReport = "Количество новых пациентов за данный период: " + item.Count();
+                }
+                else
+                {
+                    var item = DataBase.DataBaseModel.Orders.Where(w => w.DateCreate >= FromDate && w.DateCreate <= ToDate).Sum(s => s.Price);
+                    App.HeadReport = "Отчет по общей прибыли с " + FromDate.Value.Date.Date.ToShortDateString() + " по " + ToDate.Value.Date.Date.ToShortDateString();
+                    App.MainReport = "Общая прибыль составляет: " + item + "руб.";
+                }
+
+                ErrorMessage = "";
+                Report win = new Report();
+                win.Show();
             }
         }
 
@@ -444,7 +481,6 @@ namespace SessionOne.ViewModel
             }
         }
 
-
         // Свойства для добавления пациента
         private string fio;
         public string FIO
@@ -456,6 +492,7 @@ namespace SessionOne.ViewModel
                 OnPropertyChanged("FIO");
             }
         }
+
         private DateTime datebirthday;
         public DateTime DateBirthday
         {
@@ -466,6 +503,7 @@ namespace SessionOne.ViewModel
                 OnPropertyChanged("DateBirthday");
             }
         }
+
         private string serial;
         public string Serial
         {
@@ -476,6 +514,7 @@ namespace SessionOne.ViewModel
                 OnPropertyChanged("Serial");
             }
         }
+
         private string number;
         public string Number
         {
@@ -486,6 +525,7 @@ namespace SessionOne.ViewModel
                 OnPropertyChanged("Numberl");
             }
         }
+
         private string phone;
         public string Phone
         {
@@ -496,6 +536,7 @@ namespace SessionOne.ViewModel
                 OnPropertyChanged("Phone");
             }
         }
+
         private string email;
         public string Email
         {
@@ -506,6 +547,7 @@ namespace SessionOne.ViewModel
                 OnPropertyChanged("Email");
             }
         }
+
         private string polisnumber;
         public string PolisNumber
         {
@@ -516,6 +558,7 @@ namespace SessionOne.ViewModel
                 OnPropertyChanged("PolisNumber");
             }
         }
+
         private string polistype;
         public string PolisType
         {
@@ -728,6 +771,51 @@ namespace SessionOne.ViewModel
             {
                 _WarningMessage = value;
                 OnPropertyChanged("WarningMessage");
+            }
+        }
+
+        // Свойства отчетов
+        private string _HeadReportText;
+        public string HeadReportText
+        {
+            get => _HeadReportText;
+            set
+            {
+                _HeadReportText = value;
+                OnPropertyChanged("HeadReportText");
+            }
+        }
+
+        private string _MainReportText;
+        public string MainReportText
+        {
+            get => _MainReportText;
+            set
+            {
+                _MainReportText = value;
+                OnPropertyChanged("MainReportText");
+            }
+        }
+
+        private Nullable<DateTime> _FromDate;
+        public Nullable<DateTime> FromDate
+        {
+            get => _FromDate;
+            set
+            {
+                _FromDate = value;
+                OnPropertyChanged("FromDate");
+            }
+        }
+
+        private Nullable<DateTime> _ToDate;
+        public Nullable<DateTime> ToDate
+        {
+            get => _ToDate;
+            set
+            {
+                _ToDate = value;
+                OnPropertyChanged("ToDate");
             }
         }
     }
