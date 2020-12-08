@@ -119,6 +119,12 @@
     <Compile Include="Pacients.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="PolisTypes.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Reports.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Services.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -146,6 +152,7 @@
     <Compile Include="ViewModel\PacientsViewModel.cs" />
     <Compile Include="ViewModel\ProcessedServices.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
+    <Compile Include="ViewModel\ReportViewModel.cs" />
     <Compile Include="ViewModel\ServiceFilterPatient.cs" />
     <Compile Include="ViewModel\ServiceViewModel.cs" />
     <Compile Include="ViewModel\StrahovieCompaniiViewModel.cs" />

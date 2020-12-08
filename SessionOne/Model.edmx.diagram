@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="56baecc58d104c229f4625519b2b3bf8" Name="Diagram1">
+      <Diagram DiagramId="56baecc58d104c229f4625519b2b3bf8" Name="Diagram1" ZoomLevel="93">
         <EntityTypeShape EntityType="MedicalLaboratoryModel.Administrators" Width="1.5" PointX="7.75" PointY="2" IsExpanded="true" />
         <EntityTypeShape EntityType="MedicalLaboratoryModel.Analyzers" Width="1.5" PointX="3" PointY="7.625" IsExpanded="true" />
         <EntityTypeShape EntityType="MedicalLaboratoryModel.History" Width="1.5" PointX="5.25" PointY="4" IsExpanded="true" />
@@ -25,6 +25,9 @@
         <AssociationConnector Association="MedicalLaboratoryModel.FK_Users_Types" ManuallyRouted="false" />
         <AssociationConnector Association="MedicalLaboratoryModel.FK_Orders_Services" />
         <AssociationConnector Association="MedicalLaboratoryModel.FK_Services_Analyzers" />
+        <EntityTypeShape EntityType="MedicalLaboratoryModel.PolisTypes" Width="1.5" PointX="0.75" PointY="0.875" />
+        <EntityTypeShape EntityType="MedicalLaboratoryModel.Reports" Width="1.5" PointX="2.75" PointY="0.75" />
+        <AssociationConnector Association="MedicalLaboratoryModel.FK_Pacients_PolisTypes" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

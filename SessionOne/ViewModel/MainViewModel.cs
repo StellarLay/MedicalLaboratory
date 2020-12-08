@@ -1,6 +1,7 @@
 ﻿using SessionOne.View;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -61,6 +62,7 @@ namespace SessionOne.ViewModel
             IsNewOrder = false;
             ColorMessage = "#000000";
             IsVisibleAnalyseBtn = "Visible";
+
             HeadReportText = App.HeadReport;
             MainReportText = App.MainReport;
 
@@ -72,6 +74,10 @@ namespace SessionOne.ViewModel
             else if(App.roleName == "Администратор")
             {
                 DataBase.LoadHistory();
+            }
+            else if(App.roleName == "Бухгалтер")
+            {
+                DataBase.LoadReports();
             }
             App.roleName = "";
         }
@@ -362,28 +368,74 @@ namespace SessionOne.ViewModel
             }
             else
             {
+                double res = 0;
+                App.HeadReport = "";
+                App.MainReport = "";
+
                 if (nameBtn.ToString() == "StatsOneBtn")
                 {
                     var item = DataBase.DataBaseModel.Orders.Where(w => w.DateCreate >= FromDate && w.DateCreate <= ToDate);
-                    App.HeadReport = "Отчет по количеству заказов с " + FromDate.Value.Date.Date.ToShortDateString() + " по " + ToDate.Value.Date.Date.ToShortDateString();
-                    App.MainReport = "Общее количество заказов за данный период: " + item.Count();
+                    if(item != null)
+                    {
+                        App.HeadReport = "Отчет по количеству заказов с " + FromDate.Value.Date.Date.ToShortDateString() + " по " + ToDate.Value.Date.Date.ToShortDateString();
+                        App.MainReport = "Общее количество заказов за данный период: " + item.Count();
+                        res = item.Count();
+
+                        Report win = new Report();
+                        win.Show();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Заказов в данный период не было");
+                    }
                 }
                 else if (nameBtn.ToString() == "StatsTwoBtn")
                 {
                     var item = DataBase.DataBaseModel.Pacients.Where(w => w.RegisterDate >= FromDate && w.RegisterDate <= ToDate);
-                    App.HeadReport = "Отчет по зарегистрированным пациентам с " + FromDate.Value.Date.Date.ToShortDateString() + " по " + ToDate.Value.Date.Date.ToShortDateString();
-                    App.MainReport = "Количество новых пациентов за данный период: " + item.Count();
+                    if (item != null)
+                    {
+                        App.HeadReport = "Отчет по зарегистрированным пациентам с " + FromDate.Value.Date.Date.ToShortDateString() + " по " + ToDate.Value.Date.Date.ToShortDateString();
+                        App.MainReport = "Количество новых пациентов за данный период: " + item.Count();
+                        res = item.Count();
+
+                        Report win = new Report();
+                        win.Show();
+                    }
+                    else
+                    {
+                        MessageBox.Show("В данный период не был зарегистрирован ни один пациент");
+                    }
                 }
-                else
+                else if(nameBtn.ToString() == "StatsThreeBtn")
                 {
                     var item = DataBase.DataBaseModel.Orders.Where(w => w.DateCreate >= FromDate && w.DateCreate <= ToDate).Sum(s => s.Price);
-                    App.HeadReport = "Отчет по общей прибыли с " + FromDate.Value.Date.Date.ToShortDateString() + " по " + ToDate.Value.Date.Date.ToShortDateString();
-                    App.MainReport = "Общая прибыль составляет: " + item + "руб.";
+                    if(item != null)
+                    {
+                        App.HeadReport = "Отчет по общей прибыли с " + FromDate.Value.Date.Date.ToShortDateString() + " по " + ToDate.Value.Date.Date.ToShortDateString();
+                        App.MainReport = "Общая прибыль составляет: " + item + "руб.";
+                        res = Math.Round((double)item);
+
+                        Report win = new Report();
+                        win.Show();
+                    }
+                    else
+                    {
+                        MessageBox.Show("В данной период не было оформлено ни одного заказа");
+                    }
                 }
 
+                // Занесём отчёт в БД
+                Reports report = new Reports
+                {
+                    Name = App.HeadReport,
+                    Result = res,
+                    FromDate = (DateTime)FromDate,
+                    ToDate = (DateTime)ToDate,
+                    Status = "Не принят"
+                };
+                DataBase.DataBaseModel.Reports.Add(report);
+                DataBase.DataBaseModel.SaveChanges();
                 ErrorMessage = "";
-                Report win = new Report();
-                win.Show();
             }
         }
 

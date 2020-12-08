@@ -12,31 +12,18 @@ namespace SessionOne
     using System;
     using System.Collections.Generic;
     
-    public partial class Pacients
+    public partial class PolisTypes
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Pacients()
+        public PolisTypes()
         {
-            this.Orders = new HashSet<Orders>();
+            this.Pacients = new HashSet<Pacients>();
         }
     
         public int Id { get; set; }
-        public string Login { get; set; }
-        public string Password { get; set; }
-        public string FIO { get; set; }
-        public Nullable<System.DateTime> DateBirthday { get; set; }
-        public Nullable<int> PassportSerial { get; set; }
-        public Nullable<int> PassportNumber { get; set; }
-        public string Phone { get; set; }
-        public string Email { get; set; }
-        public string PolisNumber { get; set; }
-        public Nullable<int> TypePolis { get; set; }
-        public Nullable<int> StrahovayaCompania { get; set; }
-        public Nullable<System.DateTime> RegisterDate { get; set; }
+        public string Name { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Orders> Orders { get; set; }
-        public virtual StrahovieCompanii StrahovieCompanii { get; set; }
-        public virtual PolisTypes PolisTypes { get; set; }
+        public virtual ICollection<Pacients> Pacients { get; set; }
     }
 }

@@ -51,6 +51,13 @@ namespace SessionOne.ViewModel
             set => SetField(ref _Analysers, value);
         }
 
+        private ObservableCollection<ReportViewModel> _Reports;
+        public ObservableCollection<ReportViewModel> Reports
+        {
+            get => _Reports;
+            set => SetField(ref _Reports, value);
+        }
+
         private ObservableCollection<NotSuccessServices> _NotSuccessServ;
         public ObservableCollection<NotSuccessServices> NotSuccessServ
         {
@@ -145,6 +152,16 @@ namespace SessionOne.ViewModel
             foreach (var item in servicePatientOrder)
             {
                 ServicesPatientFilter.Add(item);
+            }
+        }
+
+        // Подгружаем коллекцию отчетов
+        public void LoadReports()
+        {
+            Reports = new ObservableCollection<ReportViewModel>();
+            foreach (var item in DataBaseModel.Reports)
+            {
+                Reports.Add(new ReportViewModel(item));
             }
         }
 
