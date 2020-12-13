@@ -19,25 +19,26 @@
         </StackPanel>
         <StackPanel HorizontalAlignment="Center" Height="540" Margin="0,95,0,0" VerticalAlignment="Top" Width="600">
             <Label x:Name="FIOLabel" Content="ФИО пациента" Margin="0,10,0,0"/>
-            <TextBox x:Name="FIOBox" Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding FIO}"/>
+            <TextBox x:Name="FIOBox" Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding FIO}" BorderBrush="#4C277AA5"/>
             <Label x:Name="dateLabel" Content="Дата рождения" Margin="0,10,0,0"/>
-            <DatePicker x:Name="datePicker" BorderBrush="{x:Null}" DisplayDate="{Binding DateBirthday}"/>
+            <DatePicker x:Name="datePicker" BorderBrush="#4C277AA5" DisplayDate="{Binding DateBirthday}" BorderThickness="0,0,0,1" Padding="2,2,2,3"/>
             <Label x:Name="serialLabel" Content="Серия паспорта" Margin="0,10,0,0"/>
-            <TextBox Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding Serial}"/>
+            <TextBox Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding Serial}" PreviewTextInput="TextBox_PreviewTextInput" MaxLength="4" BorderBrush="#4C277AA5"/>
             <Label x:Name="numberLabel" Content="Номер паспорта" Margin="0,10,0,0"/>
-            <TextBox Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding Number}"/>
+            <TextBox Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding Number}" PreviewTextInput="TextBox_PreviewTextInput" MaxLength="6" BorderBrush="#4C277AA5"/>
             <Label x:Name="phoneLabel" Content="Телефон" Margin="0,10,0,0"/>
-            <TextBox Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding Phone}"/>
+            <TextBox Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding Phone}" PreviewTextInput="TextBox_PreviewTextInput" MaxLength="11" BorderBrush="#4C277AA5"/>
             <Label x:Name="emailLabel" Content="Email" Margin="0,10,0,0"/>
-            <TextBox Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding Email}"/>
+            <TextBox Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding Email}" BorderBrush="#4C277AA5"/>
             <Label x:Name="numberPolisLabel" Content="Номер страхового полиса" Margin="0,10,0,0"/>
-            <TextBox x:Name="numberPolisBox" Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding PolisNumber}"/>
+            <TextBox x:Name="numberPolisBox" Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding PolisNumber}" PreviewTextInput="TextBox_PreviewTextInput" MaxLength="14" BorderBrush="#4C277AA5"/>
             <Label x:Name="typePolisLabel" Content="Тип страхового полиса" Margin="0,10,0,0"/>
-            <TextBox x:Name="typePolisBox" Height="23" TextWrapping="Wrap" BorderThickness="0,0,0,1" Padding="3,0,0,0" Text="{Binding PolisType}"/>
+            <ComboBox x:Name="typePolisCombo" ItemsSource="{Binding DataBase.TypePolises}" DisplayMemberPath="Name" SelectedValue="{Binding NamePolis}" SelectedValuePath="Name" Style="{DynamicResource ComboBoxStyle}" Height="25" VerticalContentAlignment="Center"/>
             <Label x:Name="nameCompanyLabel" Content="Название страховой компании" Margin="0,10,0,0"/>
-            <ComboBox x:Name="companyCombo" ItemsSource="{Binding DataBase.Companies}" DisplayMemberPath="Name" SelectedValue="{Binding NameCompany}" SelectedValuePath="Content"/>
+            <ComboBox x:Name="companyCombo" ItemsSource="{Binding DataBase.Companies}" DisplayMemberPath="Name" SelectedValue="{Binding NameCompany}" SelectedValuePath="Name" Style="{DynamicResource ComboBoxStyle}" Height="25" VerticalContentAlignment="Center"/>
         </StackPanel>
         <Button x:Name="addPacientValueBtn" Content="Добавить" HorizontalAlignment="Left" Margin="445,693,0,0" VerticalAlignment="Top" Width="200" Height="40" FontSize="14" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Cursor="Hand" Command="{Binding AddPacientDataCommand}"/>
         <Button x:Name="backPacientBtn" Content="Назад" HorizontalAlignment="Left" Margin="45,693,0,0" VerticalAlignment="Top" Width="200" Height="40" FontSize="14" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Cursor="Hand" Command="{Binding BackBtnCommand}"/>
+        <Label x:Name="errorMessage" Content="{Binding ErrorMessage, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="45,0,0,119.6" Width="600" HorizontalContentAlignment="Center" Foreground="{Binding ColorMessage}" Height="26" VerticalAlignment="Bottom"/>
     </Grid>
 </Window>

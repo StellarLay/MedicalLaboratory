@@ -156,6 +156,7 @@
     <Compile Include="ViewModel\ServiceFilterPatient.cs" />
     <Compile Include="ViewModel\ServiceViewModel.cs" />
     <Compile Include="ViewModel\StrahovieCompaniiViewModel.cs" />
+    <Compile Include="ViewModel\TypePolisViewModel.cs" />
     <Compile Include="ViewModel\VM.cs" />
     <Compile Include="View\AddOrderPage.xaml.cs">
       <DependentUpon>AddOrderPage.xaml</DependentUpon>

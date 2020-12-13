@@ -42,6 +42,7 @@ namespace SessionOne.ViewModel
         public ObservableCollection<OrdersViewModel> Orders { get; private set; }
         public ObservableCollection<ServiceFilterPatient> ServicesPatientFilter { get; private set; }
         public ObservableCollection<HistoryViewModel> Histories { get; private set; }
+        public ObservableCollection<TypePolisViewModel> TypePolises { get; private set; }
 
         // доп коллекции
         private ObservableCollection<AnalyserViewModel> _Analysers;
@@ -109,6 +110,12 @@ namespace SessionOne.ViewModel
                 foreach (var item in DataBaseModel.StrahovieCompanii)
                 {
                     Companies.Add(new StrahovieCompaniiViewModel(item));
+                }
+
+                TypePolises = new ObservableCollection<TypePolisViewModel>();
+                foreach (var item in DataBaseModel.PolisTypes)
+                {
+                    TypePolises.Add(new TypePolisViewModel(item));
                 }
 
                 Pacients = new ObservableCollection<PacientsViewModel>();
@@ -260,7 +267,7 @@ namespace SessionOne.ViewModel
                 var cur = App.Current.Windows.OfType<Window>().FirstOrDefault(o => o.IsActive);
                 var user = DataBaseModel.Users.FirstOrDefault(w => w.login == login && w.password == password);
                 string typename = "";
-
+                string statusHistory = "";
                 if (user != null)
                 {
                     var types = DataBaseModel.Types.FirstOrDefault(w => w.Id == user.type);
@@ -274,38 +281,49 @@ namespace SessionOne.ViewModel
                     // Когда прогрес бар загрузился
                     if (statusLoading)
                     {
+                        statusHistory = "Успешно";
                         switch (types.Name)
                         {
                             case "Администратор":
                                 AdminPage form = new AdminPage();
                                 form.Show();
-                                cur.Hide();
                                 break;
                             case "Лаборант":
                                 LaborantPage formLaborant = new LaborantPage();
                                 formLaborant.Show();
-                                cur.Hide();
                                 break;
                             case "Лаборант исследователь":
                                 LaborantIssledovatel formLaborantIssledovatel = new LaborantIssledovatel();
                                 formLaborantIssledovatel.Show();
-                                cur.Hide();
                                 break;
                             case "Бухгалтер":
                                 BuhgalterPage formBuhgalter = new BuhgalterPage();
                                 formBuhgalter.Show();
                                 break;
                         }
+                        cur.Hide();
+
+                        // История входа
+                        History newHistory = new History
+                        {
+                            Time = DateTime.Now.TimeOfDay,
+                            LoginId = user.id,
+                            Status = statusHistory
+                        };
+                        DataBaseModel.History.Add(newHistory);
+                        DataBaseModel.SaveChanges();
                     }
                 }
                 else if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
                 {
                     errorMessageLogin = "Введите логин и пароль!";
+                    statusHistory = "Неудачно";
                     return false;
                 }
                 else
                 {
                     errorMessageLogin = "Такого пользователя не существует!";
+                    statusHistory = "Неудачно";
                     return false;
                 }
             }
@@ -436,20 +454,33 @@ namespace SessionOne.ViewModel
         // Добавление пациента
         public void AddPacient(Pacients pacient)
         {
-            if(string.IsNullOrEmpty(pacient.FIO) || pacient.DateBirthday == null || 
+            var getPacient = DataBaseModel.Pacients.Where(w => w.PassportSerial == pacient.PassportSerial || w.PassportNumber == pacient.PassportNumber).FirstOrDefault();
+
+            if (string.IsNullOrEmpty(pacient.FIO) || pacient.DateBirthday == null || 
                 pacient.PassportSerial == null || pacient.PassportNumber == null ||
                 pacient.Phone == null || string.IsNullOrEmpty(pacient.Email) ||
                 pacient.PolisNumber == null || pacient.TypePolis == null)
             {
-                MessageBox.Show("Заполните все поля!");
+                colorText = "#FFD12C2C";
+                errorMessageLogin = "Заполните все поля!";
+            }
+            else if (!pacient.Email.Contains('@'))
+            {
+                colorText = "#FFD12C2C";
+                errorMessageLogin = "Введите корректный email!";
+            }
+            else if (getPacient != null)
+            {
+                colorText = "#FFD12C2C";
+                errorMessageLogin = "Пациент с такими данными уже существует!";
             }
             else
             {
                 DataBaseModel.Pacients.Add(pacient);
                 DataBaseModel.SaveChanges();
                 Pacients.Add(new PacientsViewModel(pacient));
-                
-                MessageBox.Show("Пациент успешно добавлен!");
+                colorText = "#FF1EBC59";
+                errorMessageLogin = "Пациент успешно добавлен!";
             }
         }
 
@@ -457,46 +488,34 @@ namespace SessionOne.ViewModel
         public string colorText;
         public bool CreateOrder(string fio, string service, string timeday)
         {
-            var item = DataBaseModel.Pacients.FirstOrDefault(w => w.FIO == fio);
-            if(item == null)
+            var pacient = DataBaseModel.Pacients.FirstOrDefault(w => w.FIO == fio);
+            var getService = DataBaseModel.Services.FirstOrDefault(w => w.Service == service);
+            string serviceCode = getService.Code.ToString();
+            Orders order = new Orders
             {
-                MessageBox.Show("Пациент не найден! При нажатии на ОК откроется окно добавление пациента");
-                AddPacientPage page = new AddPacientPage();
-                page.Show();
-                return false;
+                PacientId = pacient.Id,
+                Services = Convert.ToInt32(serviceCode),
+                DateCreate = DateTime.Now,
+                StatusOrder = "Ожидание результата",
+                StatusService = "Не выполнена",
+                TimeDay = Convert.ToInt32(timeday),
+                Price = getService.Price
+            };
+
+            var getOrder = DataBaseModel.Orders.FirstOrDefault(w => w.PacientId == pacient.Id && w.Services == getService.Code);
+            if (getOrder == null)
+            {
+                colorText = "#FF1EBC59";
+                DataBaseModel.Orders.Add(order);
+                DataBaseModel.SaveChanges();
+                errorMessageLogin = "Заказ успешно оформлен :) Общая сумма заказа: " + getService.Price + " руб.";
             }
             else
             {
-                var pacient = DataBaseModel.Pacients.FirstOrDefault(w => w.FIO == fio);
-                var getService = DataBaseModel.Services.FirstOrDefault(w => w.Service == service);
-                string serviceCode = getService.Code.ToString();
-                Orders order = new Orders
-                {
-                    PacientId = pacient.Id,
-                    Services = Convert.ToInt32(serviceCode),
-                    DateCreate = DateTime.Now,
-                    StatusOrder = "Ожидание результата",
-                    StatusService = "Не выполнена",
-                    TimeDay = Convert.ToInt32(timeday),
-                    Price = getService.Price
-                };
-
-                var getOrder = DataBaseModel.Orders.FirstOrDefault(w => w.PacientId == pacient.Id && w.Services == getService.Code);
-                if(getOrder == null)
-                {
-                    colorText = "#FF1EBC59";
-                    DataBaseModel.Orders.Add(order);
-                    DataBaseModel.SaveChanges();
-                    errorMessageLogin = "Заказ успешно оформлен :) Общая сумма заказа: " + getService.Price + " руб.";
-                }
-                else
-                {
-                    errorMessageLogin = "Заказ на данное исследование уже существует!";
-                    colorText = "#FFD02727";
-                }
-
-                return true;
+                errorMessageLogin = "Заказ на данное исследование уже существует!";
+                colorText = "#FFD02727";
             }
+            return true;
         }
     }
 }

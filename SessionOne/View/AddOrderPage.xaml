@@ -24,7 +24,7 @@
         <Button x:Name="backOrderBtn" Content="Назад" HorizontalAlignment="Left" Margin="14,0,0,25" Width="140" FontSize="14" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Cursor="Hand" Command="{Binding BackBtnCommand}" Height="35" VerticalAlignment="Bottom"/>
         <Label x:Name="idMaterialLabel" Content="Номер заказа:" HorizontalAlignment="Left" Margin="14,89,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="idMaterialBox" HorizontalAlignment="Left" Height="23" Margin="107,92,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="30" Background="{x:Null}" BorderThickness="0,0,0,1" Text="{Binding OrderValue, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsEnabled="False"/>
-        <GroupBox x:Name="groupOrderPacient" Header="Данные о пациенте" Height="375" Margin="14,156,10.2,0" VerticalAlignment="Top">
+        <GroupBox x:Name="groupOrderPacient" Header="Данные о пациенте" Height="375" Margin="14,156,14,0" VerticalAlignment="Top">
             <GroupBox.Style>
                 <Style>
                     <Setter Property="GroupBox.Visibility" Value="Visible"/>

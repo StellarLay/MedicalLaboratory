@@ -25,5 +25,16 @@ namespace SessionOne.View
             InitializeComponent();
             DataContext = new ApplicationViewModel();
         }
+
+        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            char c = Convert.ToChar(e.Text);
+            if (Char.IsNumber(c))
+                e.Handled = false;
+            else
+                e.Handled = true;
+
+            base.OnPreviewTextInput(e);
+        }
     }
 }

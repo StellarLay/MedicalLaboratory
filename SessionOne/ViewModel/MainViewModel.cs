@@ -62,6 +62,8 @@ namespace SessionOne.ViewModel
             IsNewOrder = false;
             ColorMessage = "#000000";
             IsVisibleAnalyseBtn = "Visible";
+            NamePolis = "Медицинское страхование";
+            NameCompany = "ВТБ Страхование";
 
             HeadReportText = App.HeadReport;
             MainReportText = App.MainReport;
@@ -282,6 +284,8 @@ namespace SessionOne.ViewModel
         // Создаем новый объект класса Pacients и добавляем его
         private void AddPacient()
         {
+            var getPolisId = DataBase.DataBaseModel.PolisTypes.Where(w => w.Name == NamePolis).FirstOrDefault();
+            var getCompanyId = DataBase.DataBaseModel.StrahovieCompanii.Where(w => w.Name == NameCompany).FirstOrDefault();
             Pacients pacient = new Pacients
             {
                 FIO = FIO,
@@ -291,9 +295,12 @@ namespace SessionOne.ViewModel
                 Phone = Phone,
                 Email = Email,
                 PolisNumber = PolisNumber,
-                TypePolis = Convert.ToInt32(PolisType)
+                TypePolis = getPolisId.Id,
+                StrahovayaCompania = getCompanyId.Id
             };
             DataBase.AddPacient(pacient);
+            ColorMessage = DataBase.colorText;
+            ErrorMessage = DataBase.errorMessageLogin;
         }
         
         // Открыть форму заказов
@@ -630,6 +637,17 @@ namespace SessionOne.ViewModel
             {
                 namecompany = value;
                 OnPropertyChanged("NameCompany");
+            }
+        }
+
+        private string namepolis;
+        public string NamePolis
+        {
+            get => namepolis;
+            set
+            {
+                namepolis = value;
+                OnPropertyChanged("NamePolis");
             }
         }
 

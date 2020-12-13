@@ -54,5 +54,6 @@
         <CheckBox Content="Лаборант-исследователь" HorizontalAlignment="Left" Margin="49,273,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked"/>
         <CheckBox Content="Лаборант" HorizontalAlignment="Left" Margin="49,301,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked_1"/>
         <CheckBox Content="Админ" HorizontalAlignment="Left" Margin="49,334,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked_2"/>
+        <CheckBox Content="Бухгалтер" HorizontalAlignment="Left" Margin="49,362,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked_3"/>
     </Grid>
 </Window>
