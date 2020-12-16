@@ -6,8 +6,8 @@
         xmlns:vm="clr-namespace:SessionOne.ViewModel"
         xmlns:local="clr-namespace:SessionOne.View"
         mc:Ignorable="d"
-        Title="Главное окно" Height="450" Width="900"
-        d:DataContext="{d:DesignInstance {x:Type vm:ApplicationViewModel}}" WindowStartupLocation="CenterScreen" >
+        Title="Главное окно" Height="500" Width="900"
+        d:DataContext="{d:DesignInstance {x:Type vm:ApplicationViewModel}}" WindowStartupLocation="CenterScreen" MinWidth="900" MinHeight="500" >
     <Grid>
         <Image HorizontalAlignment="Left" Height="82" Margin="22,21,0,0" VerticalAlignment="Top" Width="100" Source="img/logo.png">
             <Image.OpacityMask>
@@ -23,12 +23,13 @@
         </Image>
         <GroupBox x:Name="ReportsGroup" Header="Отчеты" Margin="22,140,22,30" BorderBrush="#4C277AA5">
             <Grid Margin="0,10,0,0">
-                <Grid Height="34" VerticalAlignment="Top" Margin="10,0,20,0">
+                <Grid Height="34" VerticalAlignment="Top" Margin="10,0,25,0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="190*"/>
-                        <ColumnDefinition Width="190*"/>
-                        <ColumnDefinition Width="190*"/>
-                        <ColumnDefinition Width="190*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Label x:Name="IdLabel" Content="Код" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Grid.Column="0"/>
                     <Label x:Name="NameLabel" Content="Наименование" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Grid.Column="1"/>
@@ -39,9 +40,10 @@
                     <ItemsControl ItemsSource="{Binding DataBase.Reports}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid Height="25" Margin="0,0,0,5">
+                                <Grid Height="40" Margin="0,0,0,5">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="2*"/>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="*"/>
@@ -50,6 +52,7 @@
                                     <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" Margin="0" Grid.Column="1" VerticalAlignment="Center"/>
                                     <TextBlock Text="{Binding Result}" Margin="0" HorizontalAlignment="Center" Grid.Column="2" VerticalAlignment="Center"/>
                                     <TextBlock Text="{Binding Status}" HorizontalAlignment="Center" Margin="0" Grid.Column="3" VerticalAlignment="Center"/>
+                                    <Button x:Name="SuccessBtn" Content="Принять" Grid.Column="4" Height="27" Width="Auto" Background="#FF277AA5" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Cursor="Hand" Command="{Binding DataContext.SuccessReportCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, UpdateSourceTrigger=PropertyChanged}" CommandParameter="{Binding}" Grid.ColumnSpan="1" HorizontalAlignment="Stretch" Margin="12,7,9.6,4"/>
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
