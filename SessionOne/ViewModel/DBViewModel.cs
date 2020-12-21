@@ -166,7 +166,7 @@ namespace SessionOne.ViewModel
         public void LoadReports()
         {
             Reports = new ObservableCollection<ReportViewModel>();
-            foreach (var item in DataBaseModel.Reports)
+            foreach (var item in DataBaseModel.Reports.Where(w => w.Status == "Не принят"))
             {
                 Reports.Add(new ReportViewModel(item));
             }
@@ -516,6 +516,17 @@ namespace SessionOne.ViewModel
                 colorText = "#FFD02727";
             }
             return true;
+        }
+
+        // Принимаем отчеты
+        public void SuccessReport(ReportViewModel rep)
+        {
+            var item = DataBaseModel.Reports.Where(w => w.Id == rep.Id).FirstOrDefault();
+            item.Status = "Принят";
+            DataBaseModel.SaveChanges();
+
+            MessageBox.Show("Отчет принят!");
+            LoadReports();
         }
     }
 }

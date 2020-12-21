@@ -49,6 +49,7 @@ namespace SessionOne.ViewModel
             SuccessServiceCommand = new RelayCommand<ProcessedServices>(SuccessServiceBtn);
             SelectionFioPacientCommand = new RelayCommand<object>(_ => SelectOrderFIO());
             ReportBtnCommand = new RelayCommand<object>(ReportBtn);
+            SuccessReportCommand = new RelayCommand<ReportViewModel>(SuccessReport);
 
             // Подгрузим приветствие пользователя
             UserName = "Добро пожаловать, " + App.username + "!";
@@ -100,6 +101,7 @@ namespace SessionOne.ViewModel
         public ICommand OpenInstructionCommand { get; }
         public ICommand SuccessServiceCommand { get; }
         public ICommand ReportBtnCommand { get; }
+        public ICommand SuccessReportCommand { get; }
 
 
         /// <summary>
@@ -278,6 +280,19 @@ namespace SessionOne.ViewModel
                 MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 DataBase.ChangeStatusService(service.Services, ValuePatientAnalyzer, AnalysatorValue);
+            }
+        }
+
+        // Принимаем отчеты
+        private void SuccessReport(ReportViewModel report)
+        {
+            if (MessageBox.Show(
+                "Принять выбранный отчет?",
+                "Информация",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                DataBase.SuccessReport(report);
             }
         }
 
