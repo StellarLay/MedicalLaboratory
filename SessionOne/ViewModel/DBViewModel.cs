@@ -76,7 +76,7 @@ namespace SessionOne.ViewModel
         // Таймер времени сеанса
         public int ms = 0;
         public int s = 0;
-        public int min = 0;
+        public int min = 40;
         public int h = 0;
         private void session_time(object sender, EventArgs e)
         {
@@ -87,7 +87,7 @@ namespace SessionOne.ViewModel
             }
             else if (s == 60)
             {
-                min++;
+                min--;
                 s = 0;
             }
             else if (min == 60)

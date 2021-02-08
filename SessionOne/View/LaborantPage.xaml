@@ -28,7 +28,7 @@
         <Label x:Name="warningSessionLabel" Margin="127,87,0,0" VerticalAlignment="Top" Content="{Binding WarningMessage, UpdateSourceTrigger=PropertyChanged}" Height="25" VerticalContentAlignment="Center" HorizontalAlignment="Left" Foreground="#FFDD6B6B"/>
         <StackPanel HorizontalAlignment="Center" Height="200" Margin="0,100,0,0" VerticalAlignment="Center" Width="346">
             <Button x:Name="AddOrderBtn" Content="Принятие биоматериала и формирование заказа" HorizontalAlignment="Center" Margin="0,0,-4.4,0" VerticalAlignment="Top" Width="350" Height="50" FontSize="14" Style="{DynamicResource ButtonStyle}" Foreground="#E5FFFFFF" Cursor="Hand" Command="{Binding OpenOrderFormCommand}"/>
-            <Button x:Name="AddPacient" Content="Добавление пациента" HorizontalAlignment="Left" Margin="0,20,-4.4,0" VerticalAlignment="Top" Width="350" Height="50" FontSize="14" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Cursor="Hand" Command="{Binding AddPacientBtnCommand}"/>
+            <Button x:Name="AddPacient" Content="Добавление/редактирование пациента" HorizontalAlignment="Left" Margin="0,20,-4.4,0" VerticalAlignment="Top" Width="350" Height="50" FontSize="14" Foreground="#E5FFFFFF" Style="{DynamicResource ButtonStyle}" Cursor="Hand" Command="{Binding AddPacientBtnCommand}"/>
         </StackPanel>
         <Label x:Name="timers_ms_label" Margin="127,10,0,0" VerticalAlignment="Top" Content="{Binding TimerValue2, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="276" FontSize="16" Foreground="White"/>
     </Grid>

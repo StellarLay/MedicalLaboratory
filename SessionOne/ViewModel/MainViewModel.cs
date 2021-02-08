@@ -50,6 +50,8 @@ namespace SessionOne.ViewModel
             SelectionFioPacientCommand = new RelayCommand<object>(_ => SelectOrderFIO());
             ReportBtnCommand = new RelayCommand<object>(ReportBtn);
             SuccessReportCommand = new RelayCommand<ReportViewModel>(SuccessReport);
+            SearchByFioCommand = new RelayCommand<object>(_ => SearchByFio());
+            ChangePacientCommand = new RelayCommand<object>(_ => ChangePatient());
 
             // Подгрузим приветствие пользователя
             UserName = "Добро пожаловать, " + App.username + "!";
@@ -65,6 +67,7 @@ namespace SessionOne.ViewModel
             IsVisibleAnalyseBtn = "Visible";
             NamePolis = "Медицинское страхование";
             NameCompany = "ВТБ Страхование";
+            DateBirthday = DateTime.Now;
 
             HeadReportText = App.HeadReport;
             MainReportText = App.MainReport;
@@ -102,6 +105,8 @@ namespace SessionOne.ViewModel
         public ICommand SuccessServiceCommand { get; }
         public ICommand ReportBtnCommand { get; }
         public ICommand SuccessReportCommand { get; }
+        public ICommand SearchByFioCommand { get; }
+        public ICommand ChangePacientCommand { get; }
 
 
         /// <summary>
@@ -119,6 +124,59 @@ namespace SessionOne.ViewModel
             {
                 ErrorMessage = "";
                 timer.Start();
+            }
+        }
+
+        // Поиск пациента по ФИО
+        private void SearchByFio()
+        {
+            var item = DataBase.DataBaseModel.Pacients.FirstOrDefault(w => w.FIO == FIO);
+            if (item != null)
+            {
+                var getNamePolis = DataBase.DataBaseModel.PolisTypes.FirstOrDefault(w => w.Id == item.TypePolis);
+                var getNameCompany = DataBase.DataBaseModel.StrahovieCompanii.FirstOrDefault(w => w.Id == item.StrahovayaCompania);
+
+                DateBirthday = (DateTime)item.DateBirthday;
+                Serial = item.PassportSerial.ToString();
+                Number = item.PassportNumber.ToString();
+                Phone = item.Phone;
+                Email = item.Email;
+                PolisNumber = item.PolisNumber;
+                NamePolis = getNamePolis.Name;
+                NameCompany = getNameCompany.Name;
+            }
+            else
+            {
+                MessageBox.Show("Запрашиваемый пациент не найден!");
+            }
+        }
+
+        // Изменяем данные пациента
+        private void ChangePatient()
+        {
+            var item = DataBase.DataBaseModel.Pacients.FirstOrDefault(w => w.FIO == FIO);
+            if(item != null)
+            {
+                var getIdPolis = DataBase.DataBaseModel.PolisTypes.FirstOrDefault(w => w.Name == NamePolis);
+                var getIdCompany = DataBase.DataBaseModel.StrahovieCompanii.FirstOrDefault(w => w.Name == NameCompany);
+
+                item.FIO = FIO;
+                item.DateBirthday = DateBirthday;
+                item.PassportSerial = int.Parse(Serial);
+                item.PassportNumber = int.Parse(Number);
+                item.Phone = Phone;
+                item.Email = Email;
+                item.PolisNumber = PolisNumber;
+                item.TypePolis = getIdPolis.Id;
+                item.StrahovayaCompania = getIdCompany.Id;
+
+                DataBase.DataBaseModel.SaveChanges();
+
+                MessageBox.Show("Данные о пациенте: " + FIO + " успешно обновлены!");
+            }
+            else
+            {
+                MessageBox.Show("Данного пациента не существует в базе данных!");
             }
         }
 
@@ -150,7 +208,7 @@ namespace SessionOne.ViewModel
         private void timer_session(object sender, EventArgs e)
         {
             DataBase.timeSession.Start();
-            if (DataBase.min == 2)
+            if (DataBase.min == 0)
             {
                 App.statusSession = true;
                 var cur = App.Current.Windows.OfType<Window>().FirstOrDefault(o => o.IsActive);
@@ -160,9 +218,9 @@ namespace SessionOne.ViewModel
                 WarningMessage = "";
                 timerSession.Stop();
             }
-            else if (DataBase.min == 1)
+            else if (DataBase.min == 10)
             {
-                WarningMessage = "До окончания сеанса осталась 1 минута";
+                WarningMessage = "До окончания сеанса осталась 10 минут";
             }
             TimerValue = "Время сеанса: " + DataBase.h + "ч : " + DataBase.min + "м";
             TimerValue2 = DataBase.ms.ToString() + DataBase.s.ToString();
@@ -596,7 +654,7 @@ namespace SessionOne.ViewModel
             set
             {
                 number = value;
-                OnPropertyChanged("Numberl");
+                OnPropertyChanged("Number");
             }
         }
 
