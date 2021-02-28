@@ -40,11 +40,17 @@ namespace SessionOne.ViewModel
         public ObservableCollection<PacientsViewModel> Pacients { get; private set; }
         public ObservableCollection<ServiceViewModel> Services { get; private set; }
         public ObservableCollection<OrdersViewModel> Orders { get; private set; }
-        public ObservableCollection<ServiceFilterPatient> ServicesPatientFilter { get; private set; }
         public ObservableCollection<HistoryViewModel> Histories { get; private set; }
         public ObservableCollection<TypePolisViewModel> TypePolises { get; private set; }
 
         // доп коллекции
+        private ObservableCollection<ServiceFilterPatient> _ServicesPatientFilter;
+        public ObservableCollection<ServiceFilterPatient> ServicesPatientFilter
+        {
+            get => _ServicesPatientFilter;
+            set => SetField(ref _ServicesPatientFilter, value);
+        }
+
         private ObservableCollection<AnalyserViewModel> _Analysers;
         public ObservableCollection<AnalyserViewModel> Analysers
         {
@@ -101,6 +107,22 @@ namespace SessionOne.ViewModel
             }
         }
 
+        // Грузим услуги
+        public void LoadResultServices(string patient)
+        {
+            Services.Clear();
+            var getIdPatient = DataBaseModel.Pacients.FirstOrDefault(w => w.FIO == patient);
+            var ordersServices = from o in DataBaseModel.Orders
+                                      join s in DataBaseModel.Services on o.Services equals s.Code
+                                      where o.PacientId == getIdPatient.Id
+                                      select new ServiceFilterPatient { Code = s.Code, Service = s.Service };
+
+            ServicesPatientFilter.Clear();
+            foreach (var item in ordersServices)
+            {
+                ServicesPatientFilter.Add(item);
+            }
+        }
         // Метод для заполнения всех необходимых нам коллекций для дальнейшей работы с ними
         public void LoadData()
         {

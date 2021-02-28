@@ -48,10 +48,14 @@ namespace SessionOne.ViewModel
             OpenInstructionCommand = new RelayCommand<object>(_=> OpenInstructionPage());
             SuccessServiceCommand = new RelayCommand<ProcessedServices>(SuccessServiceBtn);
             SelectionFioPacientCommand = new RelayCommand<object>(_ => SelectOrderFIO());
+            SelectionResultFioPacientCommand = new RelayCommand<object>(_ => SelectResultService());
+            SelectionResultServiceCommand = new RelayCommand<object>(_ => SelectionResultService());
             ReportBtnCommand = new RelayCommand<object>(ReportBtn);
             SuccessReportCommand = new RelayCommand<ReportViewModel>(SuccessReport);
             SearchByFioCommand = new RelayCommand<object>(_ => SearchByFio());
             ChangePacientCommand = new RelayCommand<object>(_ => ChangePatient());
+            ResultPacientBtnCommand = new RelayCommand<object>(_ => OpenResultPacientWindow());
+            GetResultPacientCommand = new RelayCommand<object>(_ => GetResultService());
 
             // Подгрузим приветствие пользователя
             UserName = "Добро пожаловать, " + App.username + "!";
@@ -63,8 +67,11 @@ namespace SessionOne.ViewModel
             WarningMessage = "";
             OrderValue = App.lastIdNewOrder.ToString();
             IsNewOrder = false;
+            IsGetResultBtn = false;
+            ViewSelectAnalyse = false;
             ColorMessage = "#000000";
             IsVisibleAnalyseBtn = "Visible";
+            VisibleOpenResultBtn = "Hidden";
             NamePolis = "Медицинское страхование";
             NameCompany = "ВТБ Страхование";
             DateBirthday = DateTime.Now;
@@ -99,6 +106,8 @@ namespace SessionOne.ViewModel
         public ICommand CheckServiceCommand { get; }
         public ICommand SelectedFIOCommand { get; }
         public ICommand SelectionFioPacientCommand { get; }
+        public ICommand SelectionResultFioPacientCommand { get; }
+        public ICommand SelectionResultServiceCommand { get; }
         public ICommand SendAnalyseCommand { get; }
         public ICommand SelectedPatientCommand { get; }
         public ICommand OpenInstructionCommand { get; }
@@ -107,6 +116,8 @@ namespace SessionOne.ViewModel
         public ICommand SuccessReportCommand { get; }
         public ICommand SearchByFioCommand { get; }
         public ICommand ChangePacientCommand { get; }
+        public ICommand ResultPacientBtnCommand { get; }
+        public ICommand GetResultPacientCommand { get; }
 
 
         /// <summary>
@@ -245,6 +256,29 @@ namespace SessionOne.ViewModel
             {
                 IsIndeterminate = true;
             }
+        }
+
+        // Получим результаты анализов
+        private void GetResultService()
+        {
+            int getPatientId = DataBase.DataBaseModel.Pacients.FirstOrDefault(w => w.FIO == SelectionFioPacient).Id;
+            int getServiceId = DataBase.DataBaseModel.Services.FirstOrDefault(w => w.Service == SelectService).Code;
+
+            var statusOrder = DataBase.DataBaseModel.Orders.FirstOrDefault(w => w.PacientId == getPatientId && w.Services == getServiceId);
+            if (statusOrder.StatusService == "Выполнена")
+            {
+                VisibleOpenResultBtn = "Visible";
+            }
+            else
+            {
+                WarningMessage = "Выбранный анализ ещё не готов!";
+            }
+        }
+
+        private void OpenResultPacientWindow()
+        {
+            ResultPacientPage page = new ResultPacientPage();
+            page.Show();
         }
 
         // Открытие формы добавление пациента
@@ -418,6 +452,52 @@ namespace SessionOne.ViewModel
             else
             {
                 IsNewOrder = false;
+            }
+        }
+
+        private void SelectResultService()
+        {
+            VisibleOpenResultBtn = "Hidden";
+            WarningMessage = "";
+
+            if (!string.IsNullOrEmpty(SelectionFioPacient))
+            {
+                if (!string.IsNullOrEmpty(SelectionFioPacient) && !string.IsNullOrEmpty(SelectService))
+                {
+                    IsGetResultBtn = true;
+                }
+                else
+                {
+                    ViewSelectAnalyse = true;
+                }
+                DataBase.LoadResultServices(SelectionFioPacient);
+            }
+            else
+            {
+                IsGetResultBtn = false;
+            }
+        }
+
+        // Отлавливаем выбранный анали при получении результатов
+        private void SelectionResultService()
+        {
+            VisibleOpenResultBtn = "Hidden";
+            WarningMessage = "";
+
+            if (!string.IsNullOrEmpty(SelectionFioPacient))
+            {
+                if (!string.IsNullOrEmpty(SelectionFioPacient) && !string.IsNullOrEmpty(SelectService))
+                {
+                    IsGetResultBtn = true;
+                }
+                else
+                {
+                    ViewSelectAnalyse = true;
+                }
+            }
+            else
+            {
+                IsGetResultBtn = false;
             }
         }
 
@@ -768,6 +848,39 @@ namespace SessionOne.ViewModel
             {
                 _IsNewOrder = value;
                 OnPropertyChanged("IsNewOrder");
+            }
+        }
+
+        private string _VisibleOpenResultBtn;
+        public string VisibleOpenResultBtn
+        {
+            get => _VisibleOpenResultBtn;
+            set
+            {
+                _VisibleOpenResultBtn = value;
+                OnPropertyChanged("VisibleOpenResultBtn");
+            }
+        }
+
+        private bool _IsGetResultBtn;
+        public bool IsGetResultBtn
+        {
+            get => _IsGetResultBtn;
+            set
+            {
+                _IsGetResultBtn = value;
+                OnPropertyChanged("IsGetResultBtn");
+            }
+        }
+
+        private bool _ViewSelectAnalyse;
+        public bool ViewSelectAnalyse
+        {
+            get => _ViewSelectAnalyse;
+            set
+            {
+                _ViewSelectAnalyse = value;
+                OnPropertyChanged("ViewSelectAnalyse");
             }
         }
 
