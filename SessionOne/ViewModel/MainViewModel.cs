@@ -20,6 +20,7 @@ namespace SessionOne.ViewModel
         DispatcherTimer timer = new DispatcherTimer();
         DispatcherTimer timerSession = new DispatcherTimer();
         DispatcherTimer timerAnalyse = new DispatcherTimer();
+
         public DBViewModel DataBase { get; }
 
         public ApplicationViewModel()
@@ -56,6 +57,8 @@ namespace SessionOne.ViewModel
             ChangePacientCommand = new RelayCommand<object>(_ => ChangePatient());
             ResultPacientBtnCommand = new RelayCommand<object>(_ => OpenResultPacientWindow());
             GetResultPacientCommand = new RelayCommand<object>(_ => GetResultService());
+            OpenPdfResultCommand = new RelayCommand<object>(_ => OpenPdfResult());
+            OpenPrintTicketCommand = new RelayCommand<object>(_ => OpenPrintTicket());
 
             // Подгрузим приветствие пользователя
             UserName = "Добро пожаловать, " + App.username + "!";
@@ -78,6 +81,12 @@ namespace SessionOne.ViewModel
 
             HeadReportText = App.HeadReport;
             MainReportText = App.MainReport;
+
+            // Свойства для окна результатов анализа
+            PrintFio = App.FIO;
+            PrintLaborant = "Лаборант: " + " " + App.username;
+            PrintStartDate = "Дата взятия образца: " + " " + App.StartDate;
+            PrintDate = "Дата печати результата: " + " " + DateTime.Now.ToString("dd/MM/yyyy");
 
             // Запуск таймера сеанса лаборантов
             if (App.roleName == "Лаборант исследователь" || App.roleName == "Лаборант")
@@ -118,11 +127,43 @@ namespace SessionOne.ViewModel
         public ICommand ChangePacientCommand { get; }
         public ICommand ResultPacientBtnCommand { get; }
         public ICommand GetResultPacientCommand { get; }
+        public ICommand OpenPdfResultCommand { get; }
+        public ICommand OpenPrintTicketCommand { get; }
 
 
         /// <summary>
         /// Методы
         /// </summary>
+        
+        // Открываем окно результатов анализа
+        private void OpenPrintTicket()
+        {
+            // Дата взятия анализа
+            var getPatientId = DataBase.DataBaseModel.Pacients.FirstOrDefault(w => w.FIO == SelectionFioPacient).Id;
+            var getAnalyse = DataBase.DataBaseModel.Services.FirstOrDefault(w => w.Service == SelectService).Code;
+            var getAnalyseDate = DataBase.DataBaseModel.Orders.FirstOrDefault(w => w.Services == getAnalyse && w.PacientId == getPatientId).DateCreate;
+            
+            var dateTime = getAnalyseDate;
+            var formatDate = dateTime.ToString("dd.MM.yyyy");
+            App.StartDate = formatDate;
+
+            VisiblePrintBtn = "Visible";
+            TicketPrint form = new TicketPrint();
+            form.Show();
+        }
+
+        // Формируем .PDF файл с результатами анализов
+        private void OpenPdfResult()
+        {
+            VisiblePrintBtn = "Hidden";
+            var cur = App.Current.Windows.OfType<Window>().FirstOrDefault(o => o.IsActive);
+
+            PrintDialog printDialog = new PrintDialog();
+            if(printDialog.ShowDialog() == true)
+            {
+                printDialog.PrintVisual(cur, "Gg");
+            }
+        }
 
         // Авторизаци пользователя
         private void Login(object values)
@@ -261,17 +302,20 @@ namespace SessionOne.ViewModel
         // Получим результаты анализов
         private void GetResultService()
         {
-            int getPatientId = DataBase.DataBaseModel.Pacients.FirstOrDefault(w => w.FIO == SelectionFioPacient).Id;
-            int getServiceId = DataBase.DataBaseModel.Services.FirstOrDefault(w => w.Service == SelectService).Code;
+            if(!string.IsNullOrEmpty(SelectionFioPacient) && !string.IsNullOrEmpty(SelectService))
+            {
+                int getPatientId = DataBase.DataBaseModel.Pacients.FirstOrDefault(w => w.FIO == SelectionFioPacient).Id;
+                int getServiceId = DataBase.DataBaseModel.Services.FirstOrDefault(w => w.Service == SelectService).Code;
 
-            var statusOrder = DataBase.DataBaseModel.Orders.FirstOrDefault(w => w.PacientId == getPatientId && w.Services == getServiceId);
-            if (statusOrder.StatusService == "Выполнена")
-            {
-                VisibleOpenResultBtn = "Visible";
-            }
-            else
-            {
-                WarningMessage = "Выбранный анализ ещё не готов!";
+                var statusOrder = DataBase.DataBaseModel.Orders.FirstOrDefault(w => w.PacientId == getPatientId && w.Services == getServiceId);
+                if (statusOrder.StatusService == "Выполнена")
+                {
+                    VisibleOpenResultBtn = "Visible";
+                }
+                else
+                {
+                    WarningMessage = "Выбранный анализ ещё не готов!";
+                }
             }
         }
 
@@ -478,11 +522,13 @@ namespace SessionOne.ViewModel
             }
         }
 
-        // Отлавливаем выбранный анали при получении результатов
+        // Отлавливаем выбранный анализ при получении результатов
         private void SelectionResultService()
         {
             VisibleOpenResultBtn = "Hidden";
             WarningMessage = "";
+
+            App.FIO = SelectionFioPacient;
 
             if (!string.IsNullOrEmpty(SelectionFioPacient))
             {
@@ -599,7 +645,18 @@ namespace SessionOne.ViewModel
             }
         }
 
-        // Properties
+        private string _VisiblePrintBtn;
+        public string VisiblePrintBtn
+        {
+            get => _VisiblePrintBtn;
+            set
+            {
+                _VisiblePrintBtn = value;
+                OnPropertyChanged("VisiblePrintBtn");
+            }
+        }
+
+        // Properties 
         private string login;
         public string LoginValue
         {
@@ -1072,6 +1129,51 @@ namespace SessionOne.ViewModel
             {
                 _ToDate = value;
                 OnPropertyChanged("ToDate");
+            }
+        }
+
+        // Свойства для окна результатов анализов
+        private string _PrintFio;
+        public string PrintFio
+        {
+            get => _PrintFio;
+            set
+            {
+                _PrintFio = value;
+                OnPropertyChanged("PrintFio");
+            }
+        }
+
+        private string _PrintLaborant;
+        public string PrintLaborant
+        {
+            get => _PrintLaborant;
+            set
+            {
+                _PrintLaborant = value;
+                OnPropertyChanged("PrintLaborant");
+            }
+        }
+
+        private string _PrintStartDate;
+        public string PrintStartDate
+        {
+            get => _PrintStartDate;
+            set
+            {
+                _PrintStartDate = value;
+                OnPropertyChanged("PrintStartDate");
+            }
+        }
+
+        private string _PrintDate;
+        public string PrintDate
+        {
+            get => _PrintDate;
+            set
+            {
+                _PrintDate = value;
+                OnPropertyChanged("PrintDate");
             }
         }
     }

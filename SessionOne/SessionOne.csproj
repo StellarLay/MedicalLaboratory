@@ -188,6 +188,9 @@
     <Compile Include="View\ResultPacientPage.xaml.cs">
       <DependentUpon>ResultPacientPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\TicketPrint.xaml.cs">
+      <DependentUpon>TicketPrint.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -290,6 +293,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ResultPacientPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\TicketPrint.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

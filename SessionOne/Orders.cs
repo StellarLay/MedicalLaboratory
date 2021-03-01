@@ -11,11 +11,15 @@ namespace SessionOne
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations.Schema;
+
     public partial class Orders
     {
         public int Id { get; set; }
-        public Nullable<System.DateTime> DateCreate { get; set; }
+
+        [Column(TypeName = "date")]
+        public DateTime DateCreate { get; set; }
+
         public Nullable<int> PacientId { get; set; }
         public Nullable<int> Services { get; set; }
         public string StatusOrder { get; set; }

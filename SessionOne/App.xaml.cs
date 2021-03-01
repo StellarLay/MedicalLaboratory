@@ -21,6 +21,10 @@ namespace SessionOne
 
         public static string HeadReport;
         public static string MainReport;
-    }
 
+        // Свойства для окна результатов анализа
+        public static string FIO;
+        public static string Laborant;
+        public static string StartDate;
+    }
 }
