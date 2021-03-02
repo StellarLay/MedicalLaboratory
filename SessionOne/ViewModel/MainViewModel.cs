@@ -87,6 +87,9 @@ namespace SessionOne.ViewModel
             PrintLaborant = "Лаборант: " + " " + App.username;
             PrintStartDate = "Дата взятия образца: " + " " + App.StartDate;
             PrintDate = "Дата печати результата: " + " " + DateTime.Now.ToString("dd/MM/yyyy");
+            PrintNameService = App.NameService;
+            PrintResult = App.Result;
+            PrintComment = App.Comment;
 
             // Запуск таймера сеанса лаборантов
             if (App.roleName == "Лаборант исследователь" || App.roleName == "Лаборант")
@@ -141,11 +144,14 @@ namespace SessionOne.ViewModel
             // Дата взятия анализа
             var getPatientId = DataBase.DataBaseModel.Pacients.FirstOrDefault(w => w.FIO == SelectionFioPacient).Id;
             var getAnalyse = DataBase.DataBaseModel.Services.FirstOrDefault(w => w.Service == SelectService).Code;
-            var getAnalyseDate = DataBase.DataBaseModel.Orders.FirstOrDefault(w => w.Services == getAnalyse && w.PacientId == getPatientId).DateCreate;
+            var getAnalyseDate = DataBase.DataBaseModel.Orders.FirstOrDefault(w => w.Services == getAnalyse && w.PacientId == getPatientId);
             
-            var dateTime = getAnalyseDate;
+            var dateTime = getAnalyseDate.DateCreate;
             var formatDate = dateTime.ToString("dd.MM.yyyy");
             App.StartDate = formatDate;
+            App.NameService = SelectService;
+            App.Result = getAnalyseDate.Result;
+            App.Comment = getAnalyseDate.Comment;
 
             VisiblePrintBtn = "Visible";
             TicketPrint form = new TicketPrint();
@@ -1174,6 +1180,39 @@ namespace SessionOne.ViewModel
             {
                 _PrintDate = value;
                 OnPropertyChanged("PrintDate");
+            }
+        }
+
+        private string _PrintNameService;
+        public string PrintNameService
+        {
+            get => _PrintNameService;
+            set
+            {
+                _PrintNameService = value;
+                OnPropertyChanged("PrintNameService");
+            }
+        }
+
+        private string _PrintResult;
+        public string PrintResult
+        {
+            get => _PrintResult;
+            set
+            {
+                _PrintResult = value;
+                OnPropertyChanged("PrintResult");
+            }
+        }
+
+        private string _PrintComment;
+        public string PrintComment
+        {
+            get => _PrintComment;
+            set
+            {
+                _PrintComment = value;
+                OnPropertyChanged("PrintComment");
             }
         }
     }

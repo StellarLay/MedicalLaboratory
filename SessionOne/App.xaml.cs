@@ -26,5 +26,8 @@ namespace SessionOne
         public static string FIO;
         public static string Laborant;
         public static string StartDate;
+        public static string NameService;
+        public static string Result;
+        public static string Comment;
     }
 }
