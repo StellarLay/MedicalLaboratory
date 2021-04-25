@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SessionOne.ViewModel
 {
-    class OrdersViewModel : VM
+    public class OrdersViewModel : VM
     {
         public Orders model;
         public OrdersViewModel(Orders OrderModel)

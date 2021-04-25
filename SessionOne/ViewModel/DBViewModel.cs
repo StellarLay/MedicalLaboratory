@@ -17,7 +17,7 @@ namespace SessionOne.ViewModel
     /// задания от комманд приходят сюда и здесь взаимодействуют с базой данных, 
     /// выполняя необходимую работу
     /// </summary>
-    class DBViewModel : VM
+    public class DBViewModel : VM
     {
         public DispatcherTimer timeSession = new DispatcherTimer();
         public DispatcherTimer timeApi = new DispatcherTimer();
@@ -280,6 +280,18 @@ namespace SessionOne.ViewModel
         }
 
         // Метод для авторизации пользователя
+        //public static bool LoginUserIn(string login, string password)
+        //{
+        //    if(login == "chacking0" && password == "4tzqHdkqzo4")
+        //    {
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
+
         public string errorMessageLogin;
         public bool statusLoading;
         public bool LoginUser(string login, string password)
@@ -395,6 +407,7 @@ namespace SessionOne.ViewModel
                     dynamic data = JsonConvert.DeserializeObject(responseBody);
                     progressvalue = data["progress"];
 
+                    
                     if (string.IsNullOrEmpty(progressvalue))
                     {
                         var result = data["services"][0]["result"];

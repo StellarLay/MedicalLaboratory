@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SessionOne.ViewModel
 {
-    class AnalyserViewModel : VM
+    public class AnalyserViewModel : VM
     {
         public Analyzers model;
         public AnalyserViewModel(Analyzers AnalyserModel)

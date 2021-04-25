@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SessionOne.ViewModel
 {
-    class TypePolisViewModel : VM
+    public class TypePolisViewModel : VM
     {
         public PolisTypes model;
         public TypePolisViewModel(PolisTypes TypePolisModel)

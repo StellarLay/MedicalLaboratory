@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SessionOne.ViewModel
 {
-    class HistoryViewModel : VM
+    public class HistoryViewModel : VM
     {
         private TimeSpan _Time;
         public TimeSpan Time

@@ -144,7 +144,7 @@
             </ProgressBar.Style>
         </ProgressBar>
         <Label Content="{Binding UserName, UpdateSourceTrigger=PropertyChanged}" Margin="0,46,141.2,0" VerticalAlignment="Top" Height="36" FontSize="13" VerticalContentAlignment="Center" HorizontalAlignment="Right" Width="233"/>
-        <Image Margin="0,26,36.2,0" Source="img/users/laborant_2.png" Height="75" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100">
+        <Image Margin="0,21,49.6,0" Source="img/users/Vlad.jpg" Height="75" VerticalAlignment="Top" Stretch="Fill" HorizontalAlignment="Right" Width="100">
             <Image.Clip>
                 <RectangleGeometry RadiusX="10" RadiusY="10" Rect="0,0,100,75"/>
             </Image.Clip>

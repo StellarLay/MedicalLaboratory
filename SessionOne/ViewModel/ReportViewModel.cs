@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SessionOne.ViewModel
 {
-    class ReportViewModel : VM
+    public class ReportViewModel : VM
     {
         public Reports model;
         public ReportViewModel(Reports ServiceModel)

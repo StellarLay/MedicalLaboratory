@@ -206,6 +206,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="View\img\users\Vlad.jpg" />
     <Resource Include="View\img\users\buhgalter.png" />
     <Resource Include="View\img\users\admin.png" />
     <Resource Include="View\img\logo.ico" />
