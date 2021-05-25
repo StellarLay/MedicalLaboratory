@@ -1,0 +1,2 @@
+# MedicalLaboratory
+Дипломный проект
