@@ -14,10 +14,10 @@
                 <ImageBrush ImageSource="img/logo.png"/>
             </Image.OpacityMask>
         </Image>
-        <Label Content="{Binding UserName, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Margin="0,52,129.6,0" VerticalAlignment="Top" Width="224" HorizontalContentAlignment="Right"/>
-        <Image Margin="0,26,36,0" Source="img/users/admin.png" Height="75" VerticalAlignment="Top" HorizontalAlignment="Right" Width="80">
+        <Label Content="{Binding UserName, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Margin="0,52,137.6,0" VerticalAlignment="Top" Width="224" HorizontalContentAlignment="Right"/>
+        <Image Margin="0,21,42.6,0" Source="img/users/Vlad.jpg" Height="75" VerticalAlignment="Top" Stretch="Fill" Width="90" HorizontalAlignment="Right">
             <Image.Clip>
-                <RectangleGeometry RadiusX="10" RadiusY="10" Rect="0,0,80,75"/>
+                <RectangleGeometry RadiusX="10" RadiusY="10" Rect="0,0,90,75"/>
             </Image.Clip>
         </Image>
         <GroupBox x:Name="HistoryLoginBox" Header="История входа в систему" Margin="22,240,371.6,30" BorderBrush="#4C277AA5">

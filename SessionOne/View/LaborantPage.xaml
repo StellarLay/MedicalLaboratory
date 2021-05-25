@@ -18,10 +18,10 @@
             </Image.OpacityMask>
         </Image>
         <Button x:Name="backBtn" Content="На главный экран" HorizontalAlignment="Left" Margin="25,0,0,25" VerticalAlignment="Bottom" Width="130" Height="35" Style="{DynamicResource ButtonStyle}" Foreground="#E5FFFFFF" Command="{Binding BackBtnCommand}" Cursor="Hand"/>
-        <Label Content="{Binding UserName, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Margin="0,46,130,0" VerticalAlignment="Top" Width="224" HorizontalContentAlignment="Right"/>
-        <Image Margin="0,26,36.6,0" Source="img/users/laborant_1.jpeg" Height="75" VerticalAlignment="Top" HorizontalAlignment="Right" Width="80">
+        <Label Content="{Binding UserName, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Margin="0,46,137.6,0" VerticalAlignment="Top" Width="224" HorizontalContentAlignment="Right"/>
+        <Image Margin="0,21,42.6,0" Source="img/users/Vlad.jpg" Height="75" VerticalAlignment="Top" Stretch="Fill" Width="90" HorizontalAlignment="Right">
             <Image.Clip>
-                <RectangleGeometry RadiusX="10" RadiusY="10" Rect="0,0,80,75"/>
+                <RectangleGeometry RadiusX="10" RadiusY="10" Rect="0,0,90,75"/>
             </Image.Clip>
         </Image>
         <Label x:Name="timerLabel" Margin="127,46,0,0" VerticalAlignment="Top" Content="{Binding TimerValue, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="198" FontSize="16" Foreground="#FF246D93"/>
