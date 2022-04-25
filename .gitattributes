@@ -3,7 +3,7 @@
 ###############################################################################
 * text=auto
 *.cs linguist-detectable=true  
-*.xml linguist-detectable=false 
+*.xaml linguist-detectable=true
 
 ###############################################################################
 # Set default behavior for command prompt diff.
