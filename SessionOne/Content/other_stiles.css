@@ -1,0 +1,16 @@
+.btn-rotate-90 {
+    border-top: 8px solid #e5f5ff;
+    border-left: 5px solid #e5f5ff;
+    border-right: 5px solid #e5f5ff;
+    border-bottom: none;
+    border-radius: 5px;
+
+  }
+  .btn-rotate-180 {
+    border-top:none;
+    border-bottom: 3px solid #1669b1;
+    border-left: 3px solid #1669b1;
+    border-right: 3px solid #1669b1;
+    border-radius: 5px;
+
+  }
